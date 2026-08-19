@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: bakery
+    description: Bakery storefront and operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,81 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /bakery/summary:
+    get:
+      operationId: getBakerySummary
+      tags: [bakery]
+      summary: Get bakery dashboard summary
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BakerySummary"
+  /bakery/inventory:
+    get:
+      operationId: listInventory
+      tags: [bakery]
+      summary: List inventory items
+      responses:
+        "200":
+          description: Inventory items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryItem"
+    post:
+      operationId: createInventory
+      tags: [bakery]
+      summary: Create inventory item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryInput"
+      responses:
+        "201":
+          description: Created inventory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+  /bakery/equipment:
+    get:
+      operationId: listEquipment
+      tags: [bakery]
+      summary: List bakery equipment
+      responses:
+        "200":
+          description: Equipment items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EquipmentItem"
+  /bakery/quote:
+    post:
+      operationId: calculateCakeQuote
+      tags: [bakery]
+      summary: Calculate a cake quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CakeQuoteInput"
+      responses:
+        "200":
+          description: Cake quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CakeQuote"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +110,122 @@ components:
           type: string
       required:
         - status
+    BakerySummary:
+      type: object
+      properties:
+        revenue:
+          type: number
+        openOrders:
+          type: number
+        lowStockCount:
+          type: number
+        inventoryValue:
+          type: number
+        weeklyRevenue:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenuePoint"
+      required: [revenue, openOrders, lowStockCount, inventoryValue, weeklyRevenue]
+    RevenuePoint:
+      type: object
+      properties:
+        day:
+          type: string
+        value:
+          type: number
+      required: [day, value]
+    InventoryItem:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        category:
+          type: string
+        unit:
+          type: string
+        quantity:
+          type: number
+        reorderAt:
+          type: number
+        cost:
+          type: number
+        status:
+          type: string
+      required: [id, name, category, unit, quantity, reorderAt, cost, status]
+    InventoryInput:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        unit:
+          type: string
+        quantity:
+          type: number
+        reorderAt:
+          type: number
+        cost:
+          type: number
+      required: [name, category, unit, quantity, reorderAt, cost]
+    EquipmentItem:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+        nextService:
+          type: string
+      required: [id, name, category, status, nextService]
+    CakeQuoteInput:
+      type: object
+      properties:
+        size:
+          type: string
+        layers:
+          type: number
+        tiers:
+          type: number
+        flavour:
+          type: string
+        frosting:
+          type: string
+        topper:
+          type: string
+        drip:
+          type: string
+        equipment:
+          type: array
+          items:
+            type: string
+      required: [size, layers, tiers, flavour, frosting, topper, drip, equipment]
+    CakeQuote:
+      type: object
+      properties:
+        subtotal:
+          type: number
+        serviceFee:
+          type: number
+        total:
+          type: number
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteLineItem"
+      required: [subtotal, serviceFee, total, lineItems]
+    QuoteLineItem:
+      type: object
+      properties:
+        label:
+          type: string
+        amount:
+          type: number
+      required: [label, amount]
 

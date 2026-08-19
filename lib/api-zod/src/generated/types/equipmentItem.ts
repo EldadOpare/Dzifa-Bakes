@@ -6,6 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface HealthStatus {
+export interface EquipmentItem {
+  id: number;
+  name: string;
+  category: string;
   status: string;
+  nextService: string;
 }

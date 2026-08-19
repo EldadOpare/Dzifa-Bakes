@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Dzifa Bakes"
+description = "A premium bakery storefront and operations workspace with a guided cake calculator, instant quotes, cart-ready invoices, inventory, ingredients, recipes, and equipment tracking."
+version = "1.0.0"
+id = "artifacts/dzifa-bakes"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22354
+
+[services.development]
+run = "pnpm --filter @workspace/dzifa-bakes run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dzifa-bakes", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/dzifa-bakes/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22354"
+BASE_PATH = "/"
