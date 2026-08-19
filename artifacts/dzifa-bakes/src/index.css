@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -78,71 +79,71 @@
   --elevate-1: rgba(0, 0, 0, 0.03);
   --elevate-2: rgba(0, 0, 0, 0.08);
 
-  --background: red; /*replace with H S L */
+  --background: 42 26% 96%;
 
-  --foreground: red; /*replace with H S L */
+  --foreground: 202 24% 20%;
 
-  --border: red; /*replace with H S L */
+  --border: 35 18% 86%;
 
-  --card: red; /*replace with H S L */
+  --card: 42 36% 98%;
 
-  --card-foreground: red; /*replace with H S L */
+  --card-foreground: 202 24% 20%;
 
-  --card-border: red; /*replace with H S L */
+  --card-border: 35 18% 86%;
 
-  --sidebar: red; /*replace with H S L */
+  --sidebar: 36 30% 91%;
 
-  --sidebar-foreground: red; /*replace with H S L */
+  --sidebar-foreground: 202 24% 20%;
 
-  --sidebar-border: red; /*replace with H S L */
+  --sidebar-border: 35 18% 82%;
 
-  --sidebar-primary: red; /*replace with H S L */
+  --sidebar-primary: 172 32% 31%;
 
-  --sidebar-primary-foreground: red; /*replace with H S L */
+  --sidebar-primary-foreground: 42 36% 98%;
 
-  --sidebar-accent: red; /*replace with H S L */
+  --sidebar-accent: 35 27% 85%;
 
-  --sidebar-accent-foreground: red; /*replace with H S L */
+  --sidebar-accent-foreground: 202 24% 20%;
 
-  --sidebar-ring: red; /*replace with H S L */
+  --sidebar-ring: 172 32% 31%;
 
-  --popover: red; /*replace with H S L */
+  --popover: 42 36% 98%;
 
-  --popover-foreground: red; /*replace with H S L */
+  --popover-foreground: 202 24% 20%;
 
-  --popover-border: red; /*replace with H S L */
+  --popover-border: 35 18% 86%;
 
-  --primary: red; /*replace with H S L */
+  --primary: 172 32% 31%;
 
-  --primary-foreground: red; /*replace with H S L */
+  --primary-foreground: 42 36% 98%;
 
-  --secondary: red; /*replace with H S L */
+  --secondary: 35 33% 82%;
 
-  --secondary-foreground: red; /*replace with H S L */
+  --secondary-foreground: 202 24% 20%;
 
-  --muted: red; /*replace with H S L */
+  --muted: 38 22% 91%;
 
-  --muted-foreground: red; /*replace with H S L */
+  --muted-foreground: 202 12% 46%;
 
-  --accent: red; /*replace with H S L */
+  --accent: 11 58% 67%;
 
-  --accent-foreground: red; /*replace with H S L */
+  --accent-foreground: 202 24% 20%;
 
-  --destructive: red; /*replace with H S L */
+  --destructive: 8 62% 48%;
 
-  --destructive-foreground: red; /*replace with H S L */
+  --destructive-foreground: 42 36% 98%;
 
-  --input: red; /*replace with H S L */
-  --ring: red; /*replace with H S L */
-  --chart-1: red; /*replace with H S L */
-  --chart-2: red; /*replace with H S L */
-  --chart-3: red; /*replace with H S L */
-  --chart-4: red; /*replace with H S L */
-  --chart-5: red; /*replace with H S L */
+  --input: 35 18% 82%;
+  --ring: 172 32% 31%;
+  --chart-1: 172 32% 31%;
+  --chart-2: 11 58% 67%;
+  --chart-3: 35 33% 62%;
+  --chart-4: 202 24% 35%;
+  --chart-5: 38 22% 76%;
 
-  --app-font-sans: 'Inter', sans-serif;
-  --app-font-serif: Georgia, serif;
-  --app-font-mono: Menlo, monospace;
+  --app-font-sans: 'DM Sans', sans-serif;
+  --app-font-serif: 'Playfair Display', serif;
+  --app-font-mono: 'DM Mono', monospace;
   --radius: 0.5rem; /* 8px */
   --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
   --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
@@ -227,68 +228,68 @@
   --elevate-1: rgba(255, 255, 255, 0.04);
   --elevate-2: rgba(255, 255, 255, 0.09);
 
-  --background: red; /*replace with H S L */
+  --background: 202 24% 12%;
 
-  --foreground: red; /*replace with H S L */
+  --foreground: 42 26% 96%;
 
-  --border: red; /*replace with H S L */
+  --border: 202 18% 26%;
 
-  --card: red; /*replace with H S L */
+  --card: 202 22% 15%;
 
-  --card-foreground: red; /*replace with H S L */
+  --card-foreground: 42 26% 96%;
 
-  --card-border: red; /*replace with H S L */
+  --card-border: 202 18% 26%;
 
-  --sidebar: red; /*replace with H S L */
+  --sidebar: 202 24% 10%;
 
-  --sidebar-foreground: red; /*replace with H S L */
+  --sidebar-foreground: 42 26% 96%;
 
-  --sidebar-border: red; /*replace with H S L */
+  --sidebar-border: 202 18% 24%;
 
-  --sidebar-primary: red; /*replace with H S L */
+  --sidebar-primary: 11 58% 67%;
 
-  --sidebar-primary-foreground: red; /*replace with H S L */
+  --sidebar-primary-foreground: 202 24% 12%;
 
-  --sidebar-accent: red; /*replace with H S L */
+  --sidebar-accent: 202 18% 23%;
 
-  --sidebar-accent-foreground: red; /*replace with H S L */
+  --sidebar-accent-foreground: 42 26% 96%;
 
-  --sidebar-ring: red; /*replace with H S L */
+  --sidebar-ring: 11 58% 67%;
 
-  --popover: red; /*replace with H S L */
+  --popover: 202 22% 15%;
 
-  --popover-foreground: red; /*replace with H S L */
+  --popover-foreground: 42 26% 96%;
 
-  --popover-border: red; /*replace with H S L */
+  --popover-border: 202 18% 26%;
 
-  --primary: red; /*replace with H S L */
+  --primary: 11 58% 67%;
 
-  --primary-foreground: red; /*replace with H S L */
+  --primary-foreground: 202 24% 12%;
 
-  --secondary: red; /*replace with H S L */
+  --secondary: 202 18% 24%;
 
-  --secondary-foreground: red; /*replace with H S L */
+  --secondary-foreground: 42 26% 96%;
 
-  --muted: red; /*replace with H S L */
+  --muted: 202 18% 21%;
 
-  --muted-foreground: red; /*replace with H S L */
+  --muted-foreground: 42 14% 71%;
 
-  --accent: red; /*replace with H S L */
+  --accent: 172 32% 42%;
 
-  --accent-foreground: red; /*replace with H S L */
+  --accent-foreground: 42 26% 96%;
 
-  --destructive: red; /*replace with H S L */
+  --destructive: 8 62% 58%;
 
-  --destructive-foreground: red; /*replace with H S L */
+  --destructive-foreground: 42 26% 96%;
 
   /* Used as the border around inputs. Dark mode: Should be a border that is light enough to have high contrast when rendered on a --card background. More contrast than standard --border */
-  --input: red; /*replace with H S L */
-  --ring: red; /*replace with H S L */
-  --chart-1: red; /*replace with H S L */
-  --chart-2: red; /*replace with H S L */
-  --chart-3: red; /*replace with H S L */
-  --chart-4: red; /*replace with H S L */
-  --chart-5: red; /*replace with H S L */
+  --input: 202 18% 28%;
+  --ring: 11 58% 67%;
+  --chart-1: 172 32% 42%;
+  --chart-2: 11 58% 67%;
+  --chart-3: 35 33% 62%;
+  --chart-4: 202 24% 61%;
+  --chart-5: 38 22% 76%;
 
   --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
   --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
@@ -341,6 +342,24 @@
  * need to be distinguished from eachother visually.
  */
 @layer utilities {
+  .font-display { font-family: var(--app-font-serif); }
+  .font-mono-ui { font-family: var(--app-font-mono); }
+  .hairline { border-color: hsl(var(--border)); }
+  .page-grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .035;
+    z-index: 50;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  @keyframes drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(0,-10px,0); } }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  .animate-drift { animation: drift 5s ease-in-out infinite alternate; }
+  .skeleton { background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--card)) 50%, hsl(var(--muted)) 75%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
   /* Hide ugly search cancel button in Chrome until we can style it properly */
   input[type='search']::-webkit-search-cancel-button {
     @apply hidden;

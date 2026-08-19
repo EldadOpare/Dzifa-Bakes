@@ -1,0 +1,1 @@
+- [API contract numeric fields](api-contract-zod.md) — use numeric OpenAPI fields unless integer validation is explicitly needed and supported by the installed Zod toolchain.

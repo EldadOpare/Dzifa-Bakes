@@ -1,6 +1,6 @@
-# [Project name]
+# Dzifa Bakes
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Premium bakery storefront and operations workspace for guided cake quotes, invoices, inventory, and equipment care.
 
 ## Run & Operate
 
@@ -22,23 +22,33 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/dzifa-bakes/src/pages/Storefront.tsx` — guided custom cake builder and live quote
+- `artifacts/dzifa-bakes/src/pages/InvoicePage.tsx` — saved quote / invoice view
+- `artifacts/dzifa-bakes/src/pages/AdminDashboard.tsx` — bakery operations overview
+- `artifacts/dzifa-bakes/src/pages/InventoryPage.tsx` — searchable stock ledger
+- `artifacts/dzifa-bakes/src/pages/EquipmentPage.tsx` — equipment and service tracking
+- `artifacts/api-server/src/routes/bakery.ts` — quote, inventory, equipment, and summary API
+- `lib/api-spec/openapi.yaml` — source of truth for shared API contracts
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Cake pricing is calculated through one quote contract so customer invoice totals and bakery operations can evolve together.
+- The storefront and admin views share the same app shell but preserve distinct customer/staff navigation.
+- The first build uses seeded API data with client fallbacks so the product remains browsable while backend persistence is expanded.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Customers can configure cake size, layers, tiers, flavour, frosting, topper, drip, and finish options, then save an itemized quote as an invoice. Staff can review revenue rhythm, open orders, low-stock ingredients, inventory value, stock status, and equipment service needs.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Keep the interface premium, clean, whitish/greyish, border-led, shadow-free, and free of purple gradients.
+- Use smooth Framer Motion transitions and avoid generic raw AI layouts.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Managed workflows provide `PORT` and `BASE_PATH`; restart them through the workflow names rather than running the frontend directly.
+- After changing `lib/api-spec/openapi.yaml`, run `pnpm --filter @workspace/api-spec run codegen`.
 
 ## Pointers
 
