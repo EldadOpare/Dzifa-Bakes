@@ -15,7 +15,11 @@ async function buildAll() {
   await rm(distDir, { recursive: true, force: true });
 
   await esbuild({
-    entryPoints: [path.resolve(artifactDir, "_src/index.ts")],
+    // This lived outside api/ on purpose. Vercel's function scanner treated
+    // every .ts file under api/ as a possible function to build, even the
+    // underscore-prefixed ones, so the local-only dev server had to live
+    // somewhere Vercel would never look.
+    entryPoints: [path.resolve(artifactDir, "..", "dev-server.ts")],
     platform: "node",
     bundle: true,
     format: "esm",

@@ -33,7 +33,7 @@ Premium bakery storefront and operations workspace for guided cake quotes, invoi
 The repo deploys as a single Vercel project:
 
 - The frontend (`web`) builds to a static site (`web/dist/public`).
-- The API (`api`) is an Express app. `api/index.ts` is its Vercel entry point (`export default app`); the implementation lives in `api/_src/` — underscore-prefixed so Vercel doesn't also try to build `api/_src/routes/*.ts` as separate functions (their default exports are Express routers, which look like valid handlers to Vercel's scanner). `vercel.json` rewrites all `/api/*` requests to the one function.
+- The API (`api`) is an Express app. `api/index.ts` is its Vercel entry point (`export default app`); the implementation lives in `api/_src/` — underscore-prefixed so Vercel doesn't also try to build `api/_src/routes/*.ts` as separate functions (their default exports are Express routers, which look like valid handlers to Vercel's scanner). `vercel.json` rewrites all `/api/*` requests to the one function. Vercel's function builder compiles every `.ts` file it finds under `api/`, including underscore-prefixed ones, with strict Node ESM resolution (so relative imports there need explicit `.js` extensions). That's also why the local-only dev server lives at `dev-server.ts` in the repo root rather than inside `api/`: a file with a top-level `app.listen()` looked enough like a function entrypoint that Vercel tried to build it as one.
 - Build/output settings live in `vercel.json` at the repo root — no dashboard configuration needed beyond environment variables.
 
 Required environment variables in the Vercel project settings:
@@ -54,6 +54,7 @@ Required environment variables in the Vercel project settings:
 - `assets/logo.jpg` — the real brand logo, used in the header, footer, invoice, loader, and favicon
 - `api/_src/routes/bakery.ts` — quote, inventory, equipment, and summary API
 - `api/index.ts` — Vercel serverless entry point (wraps the Express app in `api/_src/app.ts`)
+- `dev-server.ts` — local-only entry point that runs the same Express app with `app.listen()`; kept outside `api/` so Vercel never tries to build it
 - `lib/db` — Drizzle schema and Supabase-ready Postgres client
 - `lib/api-spec/openapi.yaml` — source of truth for shared API contracts
 

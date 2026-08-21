@@ -1,5 +1,5 @@
-import app from "./app.js";
-import { logger } from "./lib/logger.js";
+import app from "./api/_src/app.js";
+import { logger } from "./api/_src/lib/logger.js";
 
 const port = Number(process.env["PORT"] ?? 5000);
 
