@@ -7,7 +7,7 @@
     "rootDir": ".",
     "types": ["node"]
   },
-  "include": ["_src", "index.ts"],
+  "include": ["_src"],
   "references": [
     {
       "path": "../lib/db"
