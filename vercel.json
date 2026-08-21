@@ -3,5 +3,8 @@
   "buildCommand": "pnpm run build && node api/vercel-postbuild.mjs",
   "installCommand": "pnpm install --frozen-lockfile",
   "outputDirectory": "web/dist/public",
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
