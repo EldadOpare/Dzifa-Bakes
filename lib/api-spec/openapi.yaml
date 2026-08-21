@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
+  # The title was kept as "Api" on purpose, since the generated file names and import paths were built around that name.
   title: Api
   version: 0.1.0
   description: API specification
