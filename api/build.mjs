@@ -15,11 +15,17 @@ async function buildAll() {
   await rm(distDir, { recursive: true, force: true });
 
   await esbuild({
-    // This lived outside api/ on purpose. Vercel's function scanner treated
-    // every .ts file under api/ as a possible function to build, even the
-    // underscore-prefixed ones, so the local-only dev server had to live
-    // somewhere Vercel would never look.
-    entryPoints: [path.resolve(artifactDir, "..", "dev-server.ts")],
+    // This lived outside api/ and as plain JS, not TS, on purpose. Something
+    // in Vercel's build pipeline was independently type-checking every .ts
+    // file it found (even outside api/, even underscore-prefixed ones)
+    // against settings that did not match our own tsconfigs, so the
+    // local-only dev server could not be a .ts file anywhere in the repo.
+    // Named explicitly (rather than as an array entry) because esbuild only
+    // strips recognized TS-style extensions when deriving an output name
+    // from an outdir entry point; left alone, a ".mjs" input produced a
+    // double-extensioned "dev-server..mjs" once outExtension appended its
+    // own ".mjs".
+    entryPoints: { "dev-server": path.resolve(artifactDir, "..", "dev-server.mjs") },
     platform: "node",
     bundle: true,
     format: "esm",
