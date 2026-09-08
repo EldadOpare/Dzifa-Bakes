@@ -82,7 +82,7 @@ export function Storefront({ onAddToCart }: StorefrontProps) {
           <motion.div initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .15, duration: 1.1, ease: 'easeOut' }} className="relative mx-auto flex aspect-[.94] w-full max-w-[550px] items-center justify-center overflow-hidden rounded-[2rem]">
             <motion.img
               src={heroImage}
-              alt="A baker piping buttercream onto a fresh layer cake in the Dzifa Bakes studio"
+              alt="A baker piping buttercream onto a fresh layer cake in the Dzilicious Bakes & More studio"
               className="h-full w-full object-cover"
               animate={{ scale: [1, 1.06, 1] }}
               transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
@@ -104,7 +104,7 @@ export function Storefront({ onAddToCart }: StorefrontProps) {
         <motion.div {...revealHeading} className="mb-16 max-w-2xl">
           <p className="font-display text-lg text-primary">The showcase</p>
           <h2 className="mt-2 font-display font-medium text-4xl tracking-[-.04em] sm:text-5xl">A closer look at what we bake.</h2>
-          <p className="mt-4 text-sm leading-6 text-muted-foreground">Real cakes from the Dzifa Bakes studio, priced from what they actually cost to make. Open one to see it properly, then make it yours below.</p>
+          <p className="mt-4 text-sm leading-6 text-muted-foreground">Real cakes from the Dzilicious Bakes & More studio, priced from what they actually cost to make. Open one to see it properly, then make it yours below.</p>
         </motion.div>
 
         <div className="space-y-16 sm:space-y-24">

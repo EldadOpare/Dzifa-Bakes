@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Clock3, Instagram, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { Link } from 'wouter';
 import { studioContact } from '../lib/bakery-data';
 import footerImage from '@assets/generated_images/hero-baking.jpg';
 import logo from '@assets/logo.jpg';
@@ -15,10 +16,10 @@ export function SiteFooter() {
     <footer className="border-t border-border">
       <div className="mx-auto grid max-w-[1440px] gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_1fr_auto] lg:gap-8 lg:px-12 lg:py-20">
         <div>
-          <img src={logo} alt="Dzifa Bakes" className="h-14 w-14 rounded-full object-cover" />
+          <img src={logo} alt="Dzilicious Bakes & More" className="h-14 w-14 rounded-full object-cover" />
           <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">Premium custom cakes, baked to order from a small studio in Osu. Every order gets a real conversation before it gets a whisk.</p>
           <a href="https://instagram.com" target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground" data-testid="link-instagram">
-            <Instagram size={16} /> @dzifabakes
+            <Instagram size={16} /> @dziliciousbakesandmore
           </a>
         </div>
 
@@ -51,11 +52,12 @@ export function SiteFooter() {
           transition={{ duration: .6 }}
           className="h-40 w-full overflow-hidden rounded-2xl lg:h-full lg:w-64"
         >
-          <img src={footerImage} alt="A baker finishing a cake in the Dzifa Bakes studio" className="h-full w-full object-cover" />
+          <img src={footerImage} alt="A baker finishing a cake in the Dzilicious Bakes & More studio" className="h-full w-full object-cover" />
         </motion.div>
       </div>
-      <div className="border-t border-border px-5 py-6 sm:px-8 lg:px-12">
-        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Dzifa Bakes. All rights reserved.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-6 sm:px-8 lg:px-12">
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Dzilicious Bakes & More. All rights reserved.</p>
+        <Link href="/login" className="text-xs text-muted-foreground hover:text-foreground" data-testid="link-footer-staff-login">Staff login</Link>
       </div>
     </footer>
   );

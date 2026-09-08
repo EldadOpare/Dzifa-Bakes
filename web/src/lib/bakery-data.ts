@@ -93,8 +93,6 @@ export const studioContact = {
   email: 'dnuer@ashesi.edu.gh',
 };
 
-// The cake's photo was carried alongside the quote, from whichever showcase item
-// the order started from, so the checkout page could still show what was chosen.
 export type CartEntry = {
   quote: CakeQuote;
   image?: string;
@@ -116,7 +114,7 @@ export const cartEntryFromShowcaseItem = (item: ShowcaseItem): CartEntry => {
 };
 
 export const money = (amount: number) =>
-  new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', maximumFractionDigits: 0 }).format(amount);
+  new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount);
 
 export const readStoredCart = (): CartEntry | null => {
   try {

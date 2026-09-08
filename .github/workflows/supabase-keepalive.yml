@@ -1,0 +1,20 @@
+# Supabase pauses free projects after 7 days with no activity.
+# This pings the db every few days so that never happens.
+name: Supabase keepalive
+
+on:
+  schedule:
+    - cron: "0 3 */4 * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install postgresql-client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Ping database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: psql "$DATABASE_URL" -c "select 1;"

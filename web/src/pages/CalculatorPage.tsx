@@ -5,7 +5,7 @@ import { useListInventory } from '@workspace/api-client-react';
 import type { InventoryItem } from '@workspace/api-client-react';
 import { fallbackInventory, money } from '../lib/bakery-data';
 
-type CalculatorLine = { id: number; inventoryId: number; quantity: number };
+type CalculatorLine = { id: number; inventoryId: number; quantity: number; useMeasureUnit: boolean };
 
 type StoredCalculator = {
   lines: CalculatorLine[];
@@ -40,19 +40,22 @@ export function CalculatorPage() {
   const [state, setState] = useState<StoredCalculator>(readStoredCalculator);
   const [selectedIngredient, setSelectedIngredient] = useState(inventory[0]?.id ?? 0);
   const [quantity, setQuantity] = useState(1);
+  const [entryUnit, setEntryUnit] = useState<'purchase' | 'measure'>('purchase');
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
 
   const findIngredient = (id: number) => inventory.find((item) => item.id === id);
+  const selected = findIngredient(selectedIngredient);
+  const canMeasure = Boolean(selected?.measureUnit && selected.unitsPerMeasure);
 
   const addLine = () => {
     const ingredient = findIngredient(selectedIngredient);
     if (!ingredient || quantity <= 0) return;
     setState((current) => ({
       ...current,
-      lines: [...current.lines, { id: Date.now(), inventoryId: ingredient.id, quantity }],
+      lines: [...current.lines, { id: Date.now(), inventoryId: ingredient.id, quantity, useMeasureUnit: canMeasure && entryUnit === 'measure' }],
     }));
     setQuantity(1);
   };
@@ -72,8 +75,11 @@ export function CalculatorPage() {
     () =>
       state.lines.map((line) => {
         const ingredient = findIngredient(line.inventoryId);
-        const amount = ingredient ? ingredient.cost * line.quantity : 0;
-        return { ...line, ingredient, amount };
+        const useMeasure = line.useMeasureUnit && ingredient?.measureUnit && ingredient.unitsPerMeasure;
+        const costPerUnit = useMeasure ? ingredient!.cost / ingredient!.unitsPerMeasure! : ingredient?.cost ?? 0;
+        const unitLabel = useMeasure ? ingredient!.measureUnit! : ingredient?.unit;
+        const amount = costPerUnit * line.quantity;
+        return { ...line, ingredient, amount, unitLabel };
       }),
     [state.lines, inventory],
   );
@@ -112,7 +118,7 @@ export function CalculatorPage() {
               Ingredient
               <select
                 value={selectedIngredient}
-                onChange={(event) => setSelectedIngredient(Number(event.target.value))}
+                onChange={(event) => { setSelectedIngredient(Number(event.target.value)); setEntryUnit('purchase'); }}
                 className="mt-2 h-11 w-full rounded-md border border-border bg-background px-3 text-sm font-normal outline-none focus:border-primary"
                 data-testid="select-calculator-ingredient"
               >
@@ -124,7 +130,7 @@ export function CalculatorPage() {
               </select>
             </label>
             <label className="w-full text-xs font-semibold sm:w-32">
-              Quantity ({findIngredient(selectedIngredient)?.unit ?? 'unit'})
+              Quantity ({entryUnit === 'measure' ? selected?.measureUnit : selected?.unit ?? 'unit'})
               <input
                 type="number"
                 min="0"
@@ -135,6 +141,12 @@ export function CalculatorPage() {
                 data-testid="input-calculator-quantity"
               />
             </label>
+            {canMeasure && (
+              <div className="flex gap-1.5 rounded-md border border-border p-1">
+                <button type="button" onClick={() => setEntryUnit('purchase')} className={`rounded px-2.5 py-1.5 text-xs capitalize ${entryUnit === 'purchase' ? 'bg-foreground text-background' : 'text-muted-foreground'}`} data-testid="button-unit-purchase">{selected?.unit}</button>
+                <button type="button" onClick={() => setEntryUnit('measure')} className={`rounded px-2.5 py-1.5 text-xs capitalize ${entryUnit === 'measure' ? 'bg-foreground text-background' : 'text-muted-foreground'}`} data-testid="button-unit-measure">{selected?.measureUnit}</button>
+              </div>
+            )}
             <button
               onClick={addLine}
               className="flex h-11 items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground"
@@ -181,10 +193,10 @@ export function CalculatorPage() {
                           className="h-9 w-20 rounded-md border border-border bg-background px-2 text-sm outline-none focus:border-primary"
                           data-testid={`input-line-quantity-${line.id}`}
                         />
-                        <span className="ml-2 text-xs text-muted-foreground">{line.ingredient?.unit}</span>
+                        <span className="ml-2 text-xs text-muted-foreground">{line.unitLabel}</span>
                       </td>
                       <td className="px-5 py-4 font-mono-ui text-xs text-muted-foreground">
-                        {line.ingredient ? money(line.ingredient.cost) : '—'}
+                        {line.ingredient ? `${money(line.amount / (line.quantity || 1))}/${line.unitLabel}` : '—'}
                       </td>
                       <td className="px-5 py-4 font-mono-ui text-xs">{money(line.amount)}</td>
                       <td className="px-5 py-4 text-right">

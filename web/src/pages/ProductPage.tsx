@@ -75,7 +75,7 @@ export function ProductPage({ onAddToCart }: ProductPageProps) {
               </button>
             ) : (
               <a
-                href={`https://wa.me/${studioContact.whatsappNumber}?text=${encodeURIComponent(`Hi Dzifa Bakes, I'd like to ask about ${item.title}.`)}`}
+                href={`https://wa.me/${studioContact.whatsappNumber}?text=${encodeURIComponent(`Hi Dzilicious Bakes & More, I'd like to ask about ${item.title}.`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-border py-3.5 text-sm font-semibold text-foreground hover:bg-muted"

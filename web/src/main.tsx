@@ -2,11 +2,12 @@ import { createRoot } from 'react-dom/client';
 
 import App from './App';
 import { ErrorBoundary } from '@/components/error-boundary';
+import './lib/supabase';
 
 import './index.css';
 
 createRoot(document.getElementById('root')!, {
-  // This was added so caught errors did not reach reportError, which would open the dev overlay.
+  // Stops caught errors from opening the dev overlay.
   onCaughtError: (error, errorInfo) => {
     console.error(error, errorInfo.componentStack);
   },

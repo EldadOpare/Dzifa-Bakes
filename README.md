@@ -1,4 +1,4 @@
-# Dzifa Bakes
+# Dzilicious Bakes & More
 
 Premium bakery storefront and operations workspace for guided cake quotes, invoices, inventory, and equipment care.
 
@@ -16,8 +16,9 @@ Premium bakery storefront and operations workspace for guided cake quotes, invoi
 1. `pnpm install`
 2. Copy `.env.example` to `.env` and fill in your Supabase `DATABASE_URL` (Project Settings -> Database -> Connection string in the Supabase dashboard).
 3. `pnpm run db:push` — push the Drizzle schema to your Supabase database (dev only).
-4. Run the app locally:
-   - `pnpm --filter @workspace/api run dev` — API server (default port 5000; on macOS, Control Center's AirPlay Receiver often already holds 5000 — override with `PORT=5050 pnpm --filter @workspace/api run dev` if so)
+4. `pnpm run db:seed` — fill the inventory and equipment tables with starter data (dev only).
+5. Run the app locally:
+   - `pnpm run dev:api` — API server (default port 5000; on macOS, Control Center's AirPlay Receiver often already holds 5000, override with `PORT=5050 pnpm run dev:api` if so). This loads `DATABASE_URL` from `.env` for you, and needs it set since the API talks to the database directly.
    - `pnpm --filter @workspace/web run dev` — frontend dev server (default port 5173). It proxies `/api/*` to `http://localhost:5000` by default, matching the `vercel.json` rewrite used in production. If you moved the API to another port, start it with `API_PROXY_TARGET=http://localhost:5050 pnpm --filter @workspace/web run dev`.
    - Open http://localhost:5173
 
@@ -27,6 +28,7 @@ Premium bakery storefront and operations workspace for guided cake quotes, invoi
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm run db:push` / `pnpm run db:push-force` — push DB schema changes to Supabase (dev only)
+- `pnpm run db:seed` — reset and refill inventory/equipment with starter data (dev only)
 
 ## Deployment (Vercel + Supabase)
 
@@ -53,11 +55,12 @@ Required environment variables in the Vercel project settings:
 - `web/src/lib/showcase-data.ts` — the cake catalog (price, description, ingredients, builder presets) shown on the storefront and product pages
 - `web/src/lib/bakery-data.ts` — pricing math, currency formatting, and `studioContact` (the real WhatsApp number and inbox orders get sent to)
 - `assets/logo.jpg` — the real brand logo, used in the header, footer, invoice, loader, and favicon
-- `api/_src/routes/bakery.ts` — quote, inventory, equipment, and summary API
+- `api/_src/routes/bakery.ts` — quote, inventory, equipment, and summary API, reads and writes through `@workspace/db`
 - `api/index.mjs` — the actual, committed Vercel serverless entry point (plain JS, re-exports from the build-time-generated `api/_runtime/index.mjs`)
 - `api/vercel-postbuild.mjs` — bundles `api/_src/app.ts` into plain JS and removes the TypeScript sources, in Vercel's build sandbox only (see Deployment section)
 - `dev-server.mjs` — local-only entry point that runs the same Express app with `app.listen()`; kept outside `api/` and out of TypeScript entirely so Vercel never tries to type-check it as a function
-- `lib/db` — Drizzle schema and Supabase-ready Postgres client
+- `lib/db` — Drizzle schema (`inventory`, `equipment`) and Supabase-ready Postgres client
+- `lib/db/src/seed-data.ts` / `lib/db/src/seed.ts` — starter data (from the owner's price list) and the script that loads it in
 - `lib/api-spec/openapi.yaml` — source of truth for shared API contracts
 
 ## Architecture decisions
@@ -80,4 +83,6 @@ Customers can configure cake size, layers, tiers, flavour, frosting, topper, dri
 
 - After changing `lib/api-spec/openapi.yaml`, run `pnpm --filter @workspace/api-spec run codegen`.
 - `lib/db`'s Postgres client auto-enables SSL for any non-localhost `DATABASE_URL` (required by Supabase).
+- The API needs `DATABASE_URL` to even start now, since `bakery.ts` reads and writes through the database. Use `pnpm run dev:api` locally, it loads `.env` for you.
+- The seeded inventory has real prices from the owner's price list, but no real stock counts (that sheet didn't track quantity on hand). Everything seeds with quantity 0 until staff enter real counts through the Inventory page.
 - `web/src/lib/bakery-data.ts`'s `studioContact` has the real WhatsApp number and inbox — orders sent from the storefront go there directly. The footer's studio address and Instagram handle are still placeholders; update `web/src/components/SiteFooter.tsx` with the real ones before launch.

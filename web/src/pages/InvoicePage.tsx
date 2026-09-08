@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, ClipboardList, Mail, MessageCircle, RotateCcw, Store, Truck } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'wouter';
+import { useCreateOrder } from '@workspace/api-client-react';
 import type { CakeQuote } from '@workspace/api-client-react';
 import { defaultQuoteInput, fallbackQuote, money, readStoredCart, storeCart, studioContact, type CartEntry } from '../lib/bakery-data';
 import logo from '@assets/logo.jpg';
@@ -36,7 +37,7 @@ function buildOrderText(quote: CakeQuote, details: OrderDetails, reference: stri
       ? `Delivery to: ${details.address || 'address to confirm'}`
       : 'Pickup at the Osu studio';
   return [
-    `New cake order — Dzifa Bakes (ref ${reference})`,
+    `New cake order — Dzilicious Bakes & More (ref ${reference})`,
     '',
     `Name: ${details.name}`,
     `Phone: ${details.phone}`,
@@ -62,6 +63,7 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
   const [sentVia, setSentVia] = useState<'whatsapp' | 'email' | null>(null);
   const [showValidation, setShowValidation] = useState(false);
   const reference = useMemo(() => `DZ-${Date.now().toString(36).toUpperCase()}`, []);
+  const createOrder = useCreateOrder();
 
   const clear = () => { setCart(null); storeCart(null); onClear(); };
 
@@ -86,6 +88,25 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
       setShowValidation(true);
       return;
     }
+    createOrder.mutate({
+      data: {
+        reference,
+        customerName: details.name,
+        phone: details.phone,
+        email: details.email || undefined,
+        eventDate: details.eventDate || undefined,
+        fulfillment: details.fulfillment,
+        address: details.fulfillment === 'delivery' ? details.address : undefined,
+        notes: details.notes || undefined,
+        channel,
+        lineItems: quote.lineItems,
+        subtotal: quote.subtotal,
+        serviceFee: quote.serviceFee,
+        total: quote.total,
+      },
+    }, {
+      onError: (error) => console.error('Could not save order', error),
+    });
     const text = buildOrderText(quote, details, reference);
     const url =
       channel === 'whatsapp'
@@ -100,7 +121,7 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
       <Link href="/" className="mb-10 flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground" data-testid="link-back-builder"><ArrowLeft size={14} /> Back to cake builder</Link>
       <div className="grid gap-12 lg:grid-cols-[1fr_380px]">
         <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}>
-          <img src={logo} alt="Dzifa Bakes" className="mb-6 h-14 w-14 rounded-full object-cover" />
+          <img src={logo} alt="Dzilicious Bakes & More" className="mb-6 h-14 w-14 rounded-full object-cover" />
           <p className="font-display text-lg text-primary">Your considered estimate</p>
           <h1 className="mt-3 font-display font-medium text-5xl tracking-[-.05em] sm:text-6xl">A little piece<br /><em className="not-italic text-primary">of the day.</em></h1>
           <p className="mt-5 max-w-md text-sm leading-6 text-muted-foreground">This is a working quote, not a payment. Share your details below and send it straight to the studio, Dzifa will personally confirm availability, delivery and the final finish.</p>
@@ -112,7 +133,7 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
             </motion.div>
           )}
 
-          <div className="mt-10 border-y border-border py-3 font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Dzifa Bakes · Custom cake brief · Ref {reference}</div>
+          <div className="mt-10 border-y border-border py-3 font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Dzilicious Bakes & More · Custom cake brief · Ref {reference}</div>
           <div className="divide-y divide-border">{quote.lineItems.map((line) => <div key={line.label} className="flex justify-between gap-5 py-4 text-sm"><span>{line.label}</span><span className="font-mono-ui text-xs">{line.amount ? money(line.amount) : 'Included'}</span></div>)}</div>
           <button onClick={clear} className="mt-5 flex items-center gap-2 text-xs text-muted-foreground hover:text-destructive" data-testid="button-clear-quote"><RotateCcw size={14} /> Start a new design</button>
 
@@ -133,7 +154,7 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
                 <FulfillmentOption label="Delivery" icon={Truck} active={details.fulfillment === 'delivery'} onClick={() => update('fulfillment', 'delivery')} testId="button-fulfillment-delivery" />
               </div>
               {details.fulfillment === 'pickup' ? (
-                <p className="mt-3 text-xs text-muted-foreground">Collect from the Dzifa Bakes studio in Osu.</p>
+                <p className="mt-3 text-xs text-muted-foreground">Collect from the Dzilicious Bakes & More studio in Osu.</p>
               ) : (
                 <div className="mt-3">
                   <Field label="Delivery address" required value={details.address} onChange={(value) => update('address', value)} invalid={showValidation && !details.address.trim()} testId="input-order-address" />

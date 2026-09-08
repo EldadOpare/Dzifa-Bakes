@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, "..", "..");
 const apiClientReactSrc = path.resolve(root, "lib", "api-client-react", "src");
 const apiZodSrc = path.resolve(root, "lib", "api-zod", "src");
 
-// The exports assumed the API title was "Api", since that set the generated file name to api.ts.
+// Forces the title to "Api" so the generated file is named api.ts.
 const titleTransformer: InputTransformerFn = (config) => {
   config.info ??= {};
   config.info.title = "Api";

@@ -1,10 +1,7 @@
-// Shared esbuild config for both the local dev-server bundle (build.mjs) and
-// the Vercel production bundle (vercel-postbuild.mjs), so the two stay in
-// sync instead of drifting.
+// Used by both build.mjs and vercel-postbuild.mjs, so they stay in sync.
 
-// These packages were kept out of the bundle because they could not be bundled safely, for
-// example if they loaded native modules at runtime or read sibling files by path. Some were
-// not even installed yet, but were listed here ahead of time in case they were added later.
+// These can't be bundled safely, think native modules or files loaded by path.
+// Some aren't even installed yet, just listed here ahead of time.
 export const external = [
   "*.node",
   "sharp",
@@ -80,7 +77,7 @@ export const external = [
   "electron",
 ];
 
-// This banner kept bundled CommonJS-only packages, like express, working in the ESM output file.
+// Keeps CommonJS-only packages, like express, working in the ESM output.
 export const banner = {
   js: `import { createRequire as __bannerCrReq } from 'node:module';
 import __bannerPath from 'node:path';

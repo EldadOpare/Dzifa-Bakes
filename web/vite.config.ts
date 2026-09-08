@@ -11,8 +11,7 @@ if (Number.isNaN(port) || port <= 0) {
 
 const basePath = process.env.BASE_PATH ?? '/';
 
-// This was added to match the /api/* rewrite that vercel.json used in production,
-// so a relative fetch('/api/...') call worked the same way in local dev.
+// Matches the /api rewrite in vercel.json, so fetch('/api/...') works the same locally.
 const apiProxyTarget = process.env.API_PROXY_TARGET ?? 'http://localhost:5000';
 
 export default defineConfig({

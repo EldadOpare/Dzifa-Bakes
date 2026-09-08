@@ -12,19 +12,23 @@ if (!connectionString) {
   );
 }
 
-// SSL was turned on for any non-local host, since Supabase and most hosted
-// Postgres providers required it and did not present a certificate the
-// default Node trust store recognized.
+// Supabase needs SSL for anything that isn't localhost.
 const isLocal = /^(localhost|127\.0\.0\.1)$/.test(new URL(connectionString).hostname);
 
 export const pool = new Pool({
   connectionString,
   ssl: isLocal ? undefined : { rejectUnauthorized: false },
-  // The pool was kept small outside local dev, since each Vercel function
-  // invocation started a fresh process. Supabase's connection pooler
-  // (port 6543, see .env.example) was meant to handle the rest.
+  // Small pool outside local dev, since each Vercel call is a fresh process.
+  // Supabase's pooler (port 6543, see .env.example) handles the rest.
   max: isLocal ? undefined : 1,
 });
+
+// Supabase's pooler drops idle connections on its own schedule. Without this,
+// that shows up as an unhandled error and crashes the whole process.
+pool.on("error", (err) => {
+  console.error("Postgres pool error (idle connection dropped, safe to ignore):", err.message);
+});
+
 export const db = drizzle(pool, { schema });
 
 export * from "./schema";

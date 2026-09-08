@@ -1,8 +1,7 @@
-# This made pnpm wait one day after a package version was published before it
-# could be installed. Most bad npm releases were caught and pulled within
-# hours, so this delay gave real protection against a supply chain attack.
-# This setting was meant to stay on. A trusted package could be added to
-# minimumReleaseAgeExclude below if it needed to install sooner.
+# Waits one day after a package version is published before pnpm can install it.
+# Most bad releases get caught and pulled within hours, so this gives real protection.
+# Keep this on. Add a trusted package to minimumReleaseAgeExclude below if it
+# needs to install sooner.
 minimumReleaseAge: 1440
 
 packages:
@@ -39,6 +38,9 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
-  # This override was needed because drizzle-kit used an older, unsafe version of esbuild inside it.
+  # drizzle-kit bundles an old, unsafe esbuild. This overrides it.
   "@esbuild-kit/esm-loader": "npm:tsx@^4.21.0"
   esbuild: "0.27.3"
+
+allowBuilds:
+  esbuild: set this to true or false

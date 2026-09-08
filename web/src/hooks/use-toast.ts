@@ -86,7 +86,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'DISMISS_TOAST': {
       const { toastId } = action;
 
-      // This reducer branch had a side effect. It was kept here instead of a separate action to keep things simple.
+      // Side effect here on purpose, keeps this simple instead of a separate action.
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {

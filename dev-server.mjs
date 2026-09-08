@@ -7,8 +7,7 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${process.env["PORT"]}"`);
 }
 
-// Express's listen callback never received an error argument, so real bind
-// failures (like the port being taken) needed the server's own error event.
+// listen() won't tell us if the port is taken. This error event will.
 const server = app.listen(port, () => {
   logger.info({ port }, "Server listening");
 });

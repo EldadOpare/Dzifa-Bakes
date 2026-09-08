@@ -30,7 +30,11 @@ export interface InventoryItem {
   quantity: number;
   reorderAt: number;
   cost: number;
+  previousCost?: number | null;
   status: string;
+  imageUrl?: string | null;
+  measureUnit?: string | null;
+  unitsPerMeasure?: number | null;
 }
 
 export interface InventoryInput {
@@ -40,6 +44,21 @@ export interface InventoryInput {
   quantity: number;
   reorderAt: number;
   cost: number;
+  measureUnit?: string | null;
+  unitsPerMeasure?: number | null;
+  imageUrl?: string | null;
+}
+
+export interface InventoryUpdate {
+  name?: string;
+  category?: string;
+  unit?: string;
+  quantity?: number;
+  reorderAt?: number;
+  cost?: number;
+  measureUnit?: string | null;
+  unitsPerMeasure?: number | null;
+  imageUrl?: string | null;
 }
 
 export interface EquipmentItem {
@@ -48,6 +67,43 @@ export interface EquipmentItem {
   category: string;
   status: string;
   nextService: string;
+  imageUrl?: string | null;
+}
+
+export interface EquipmentInput {
+  name: string;
+  category: string;
+  status?: string;
+  nextService?: string | null;
+  imageUrl?: string | null;
+}
+
+export interface EquipmentUpdate {
+  name?: string;
+  category?: string;
+  status?: string;
+  nextService?: string | null;
+  imageUrl?: string | null;
+}
+
+export interface PortfolioItem {
+  id: number;
+  title: string;
+  caption?: string | null;
+  imageUrl: string;
+  createdAt: string;
+}
+
+export interface NewPortfolioItem {
+  title: string;
+  caption?: string | null;
+  imageUrl: string;
+}
+
+export interface PortfolioItemUpdate {
+  title?: string;
+  caption?: string | null;
+  imageUrl?: string;
 }
 
 export interface CakeQuoteInput {
@@ -71,5 +127,44 @@ export interface CakeQuote {
   serviceFee: number;
   total: number;
   lineItems: QuoteLineItem[];
+}
+
+export interface Order {
+  id: number;
+  reference: string;
+  customerName: string;
+  phone: string;
+  email?: string | null;
+  eventDate?: string | null;
+  fulfillment: string;
+  address?: string | null;
+  notes?: string | null;
+  channel: string;
+  lineItems: QuoteLineItem[];
+  subtotal: number;
+  serviceFee: number;
+  total: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface NewOrder {
+  reference: string;
+  customerName: string;
+  phone: string;
+  email?: string | null;
+  eventDate?: string | null;
+  fulfillment: string;
+  address?: string | null;
+  notes?: string | null;
+  channel: string;
+  lineItems: QuoteLineItem[];
+  subtotal: number;
+  serviceFee: number;
+  total: number;
+}
+
+export interface OrderStatusUpdate {
+  status: string;
 }
 

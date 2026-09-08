@@ -14,22 +14,14 @@ const DEFAULT_JSON_ACCEPT = "application/json, application/problem+json";
 let _baseUrl: string | null = null;
 let _authTokenGetter: AuthTokenGetter | null = null;
 
-/**
- * This set a base URL to add in front of every relative request path (one that
- * started with /). It was meant for Expo bundles that needed to call a remote
- * API server. Passing null cleared it.
- */
+/** Sets a base URL for relative paths. For Expo apps calling a remote API. Pass null to clear it. */
 export function setBaseUrl(url: string | null): void {
   _baseUrl = url ? url.replace(/\/+$/, "") : null;
 }
 
 /**
- * This registered a function that returned a bearer token. It was called before
- * every fetch, and its token was attached as an Authorization header. It was
- * meant for Expo bundles that made token gated API calls. Passing null cleared it.
- *
- * This was not meant for web apps, since the browser already attached session
- * cookies to API calls on its own.
+ * Registers a function that returns a bearer token, added to every request.
+ * For Expo apps only, browsers already send cookies on their own. Pass null to clear it.
  */
 export function setAuthTokenGetter(getter: AuthTokenGetter | null): void {
   _authTokenGetter = getter;
@@ -45,8 +37,7 @@ function resolveMethod(input: RequestInfo | URL, explicitMethod?: string): strin
   return "GET";
 }
 
-// A loose check was used here because some runtimes, like React Native, polyfilled
-// URL differently, which made instanceof URL fail.
+// Some runtimes, like React Native, don't have a real URL global, so check typeof first.
 function isUrl(input: RequestInfo | URL): input is URL {
   return typeof URL !== "undefined" && input instanceof URL;
 }
@@ -101,10 +92,8 @@ function isTextMediaType(mediaType: string | null): boolean {
   );
 }
 
-// Strict equality was used on purpose. In a browser, response.body was null when
-// there was truly no content. In React Native, response.body was always undefined,
-// even for a full response, since the ReadableStream API was not implemented there.
-// A loose check would have treated every React Native response as empty.
+// Strict check on purpose. In React Native, body is always undefined, even with
+// content, so a loose check would think every response is empty.
 function hasNoBody(response: Response, method: string): boolean {
   if (method === "HEAD") return true;
   if (NO_BODY_STATUS.has(response.status)) return true;
@@ -246,7 +235,7 @@ async function parseErrorBody(response: Response, method: string): Promise<unkno
 
   const mediaType = getMediaType(response.headers);
 
-  // This fell back to text when blob was missing, as it was on some React Native builds.
+  // Falls back to text if blob isn't available, missing on some React Native builds.
   if (mediaType && !isJsonMediaType(mediaType) && !isTextMediaType(mediaType)) {
     return typeof response.blob === "function" ? response.blob() : response.text();
   }
@@ -337,8 +326,7 @@ export async function customFetch<T = unknown>(
     headers.set("accept", DEFAULT_JSON_ACCEPT);
   }
 
-  // A token was only added here if no Authorization header was already set,
-  // so a caller's own header was never overwritten.
+  // Only adds a token if the caller didn't already set one.
   if (_authTokenGetter && !headers.has("authorization")) {
     const token = await _authTokenGetter();
     if (token) {

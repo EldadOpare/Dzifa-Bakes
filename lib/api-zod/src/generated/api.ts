@@ -43,7 +43,11 @@ export const ListInventoryResponseItem = zod.object({
   "quantity": zod.number(),
   "reorderAt": zod.number(),
   "cost": zod.number(),
-  "status": zod.string()
+  "previousCost": zod.number().nullish(),
+  "status": zod.string(),
+  "imageUrl": zod.string().nullish(),
+  "measureUnit": zod.string().nullish(),
+  "unitsPerMeasure": zod.number().nullish()
 })
 export const ListInventoryResponse = zod.array(ListInventoryResponseItem)
 
@@ -57,7 +61,10 @@ export const CreateInventoryBody = zod.object({
   "unit": zod.string(),
   "quantity": zod.number(),
   "reorderAt": zod.number(),
-  "cost": zod.number()
+  "cost": zod.number(),
+  "measureUnit": zod.string().nullish(),
+  "unitsPerMeasure": zod.number().nullish(),
+  "imageUrl": zod.string().nullish()
 })
 
 export const CreateInventoryResponse = zod.object({
@@ -68,8 +75,57 @@ export const CreateInventoryResponse = zod.object({
   "quantity": zod.number(),
   "reorderAt": zod.number(),
   "cost": zod.number(),
-  "status": zod.string()
+  "previousCost": zod.number().nullish(),
+  "status": zod.string(),
+  "imageUrl": zod.string().nullish(),
+  "measureUnit": zod.string().nullish(),
+  "unitsPerMeasure": zod.number().nullish()
 })
+
+
+/**
+ * @summary Update an inventory item, e.g. after a price change
+ */
+export const UpdateInventoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateInventoryBody = zod.object({
+  "name": zod.string().optional(),
+  "category": zod.string().optional(),
+  "unit": zod.string().optional(),
+  "quantity": zod.number().optional(),
+  "reorderAt": zod.number().optional(),
+  "cost": zod.number().optional(),
+  "measureUnit": zod.string().nullish(),
+  "unitsPerMeasure": zod.number().nullish(),
+  "imageUrl": zod.string().nullish()
+})
+
+export const UpdateInventoryResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "unit": zod.string(),
+  "quantity": zod.number(),
+  "reorderAt": zod.number(),
+  "cost": zod.number(),
+  "previousCost": zod.number().nullish(),
+  "status": zod.string(),
+  "imageUrl": zod.string().nullish(),
+  "measureUnit": zod.string().nullish(),
+  "unitsPerMeasure": zod.number().nullish()
+})
+
+
+/**
+ * @summary Delete an inventory item
+ */
+export const DeleteInventoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteInventoryResponse = zod.void()
 
 
 /**
@@ -80,9 +136,245 @@ export const ListEquipmentResponseItem = zod.object({
   "name": zod.string(),
   "category": zod.string(),
   "status": zod.string(),
-  "nextService": zod.string()
+  "nextService": zod.string(),
+  "imageUrl": zod.string().nullish()
 })
 export const ListEquipmentResponse = zod.array(ListEquipmentResponseItem)
+
+
+/**
+ * @summary Create an equipment item
+ */
+export const CreateEquipmentBody = zod.object({
+  "name": zod.string(),
+  "category": zod.string(),
+  "status": zod.string().optional(),
+  "nextService": zod.string().nullish(),
+  "imageUrl": zod.string().nullish()
+})
+
+export const CreateEquipmentResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "status": zod.string(),
+  "nextService": zod.string(),
+  "imageUrl": zod.string().nullish()
+})
+
+
+/**
+ * @summary Update an equipment item
+ */
+export const UpdateEquipmentParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateEquipmentBody = zod.object({
+  "name": zod.string().optional(),
+  "category": zod.string().optional(),
+  "status": zod.string().optional(),
+  "nextService": zod.string().nullish(),
+  "imageUrl": zod.string().nullish()
+})
+
+export const UpdateEquipmentResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "status": zod.string(),
+  "nextService": zod.string(),
+  "imageUrl": zod.string().nullish()
+})
+
+
+/**
+ * @summary Delete an equipment item
+ */
+export const DeleteEquipmentParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteEquipmentResponse = zod.void()
+
+
+/**
+ * @summary List portfolio entries
+ */
+export const ListPortfolioResponseItem = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "caption": zod.string().nullish(),
+  "imageUrl": zod.string(),
+  "createdAt": zod.string()
+})
+export const ListPortfolioResponse = zod.array(ListPortfolioResponseItem)
+
+
+/**
+ * @summary Add a portfolio entry
+ */
+export const CreatePortfolioItemBody = zod.object({
+  "title": zod.string(),
+  "caption": zod.string().nullish(),
+  "imageUrl": zod.string()
+})
+
+export const CreatePortfolioItemResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "caption": zod.string().nullish(),
+  "imageUrl": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Update a portfolio entry
+ */
+export const UpdatePortfolioItemParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdatePortfolioItemBody = zod.object({
+  "title": zod.string().optional(),
+  "caption": zod.string().nullish(),
+  "imageUrl": zod.string().optional()
+})
+
+export const UpdatePortfolioItemResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "caption": zod.string().nullish(),
+  "imageUrl": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a portfolio entry
+ */
+export const DeletePortfolioItemParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeletePortfolioItemResponse = zod.void()
+
+
+/**
+ * @summary List orders
+ */
+export const ListOrdersResponseItem = zod.object({
+  "id": zod.number(),
+  "reference": zod.string(),
+  "customerName": zod.string(),
+  "phone": zod.string(),
+  "email": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
+  "fulfillment": zod.string(),
+  "address": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "channel": zod.string(),
+  "lineItems": zod.array(zod.object({
+  "label": zod.string(),
+  "amount": zod.number()
+})),
+  "subtotal": zod.number(),
+  "serviceFee": zod.number(),
+  "total": zod.number(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+})
+export const ListOrdersResponse = zod.array(ListOrdersResponseItem)
+
+
+/**
+ * @summary Create an order from checkout
+ */
+export const CreateOrderBody = zod.object({
+  "reference": zod.string(),
+  "customerName": zod.string(),
+  "phone": zod.string(),
+  "email": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
+  "fulfillment": zod.string(),
+  "address": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "channel": zod.string(),
+  "lineItems": zod.array(zod.object({
+  "label": zod.string(),
+  "amount": zod.number()
+})),
+  "subtotal": zod.number(),
+  "serviceFee": zod.number(),
+  "total": zod.number()
+})
+
+export const CreateOrderResponse = zod.object({
+  "id": zod.number(),
+  "reference": zod.string(),
+  "customerName": zod.string(),
+  "phone": zod.string(),
+  "email": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
+  "fulfillment": zod.string(),
+  "address": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "channel": zod.string(),
+  "lineItems": zod.array(zod.object({
+  "label": zod.string(),
+  "amount": zod.number()
+})),
+  "subtotal": zod.number(),
+  "serviceFee": zod.number(),
+  "total": zod.number(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Update an order's status
+ */
+export const UpdateOrderStatusParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateOrderStatusBody = zod.object({
+  "status": zod.string()
+})
+
+export const UpdateOrderStatusResponse = zod.object({
+  "id": zod.number(),
+  "reference": zod.string(),
+  "customerName": zod.string(),
+  "phone": zod.string(),
+  "email": zod.string().nullish(),
+  "eventDate": zod.string().nullish(),
+  "fulfillment": zod.string(),
+  "address": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "channel": zod.string(),
+  "lineItems": zod.array(zod.object({
+  "label": zod.string(),
+  "amount": zod.number()
+})),
+  "subtotal": zod.number(),
+  "serviceFee": zod.number(),
+  "total": zod.number(),
+  "status": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Delete an order
+ */
+export const DeleteOrderParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteOrderResponse = zod.void()
 
 
 /**

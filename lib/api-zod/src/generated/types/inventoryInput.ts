@@ -13,4 +13,7 @@ export interface InventoryInput {
   quantity: number;
   reorderAt: number;
   cost: number;
+  measureUnit?: string | null;
+  unitsPerMeasure?: number | null;
+  imageUrl?: string | null;
 }

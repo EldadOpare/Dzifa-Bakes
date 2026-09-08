@@ -14,5 +14,9 @@ export interface InventoryItem {
   quantity: number;
   reorderAt: number;
   cost: number;
+  previousCost?: number | null;
   status: string;
+  imageUrl?: string | null;
+  measureUnit?: string | null;
+  unitsPerMeasure?: number | null;
 }

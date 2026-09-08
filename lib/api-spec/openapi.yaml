@@ -69,6 +69,43 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InventoryItem"
+  /bakery/inventory/{id}:
+    patch:
+      operationId: updateInventory
+      tags: [bakery]
+      summary: Update an inventory item, e.g. after a price change
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryUpdate"
+      responses:
+        "200":
+          description: Updated inventory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+    delete:
+      operationId: deleteInventory
+      tags: [bakery]
+      summary: Delete an inventory item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
   /bakery/equipment:
     get:
       operationId: listEquipment
@@ -83,6 +120,197 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/EquipmentItem"
+    post:
+      operationId: createEquipment
+      tags: [bakery]
+      summary: Create an equipment item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EquipmentInput"
+      responses:
+        "201":
+          description: Created equipment item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EquipmentItem"
+  /bakery/equipment/{id}:
+    patch:
+      operationId: updateEquipment
+      tags: [bakery]
+      summary: Update an equipment item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EquipmentUpdate"
+      responses:
+        "200":
+          description: Updated equipment item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EquipmentItem"
+    delete:
+      operationId: deleteEquipment
+      tags: [bakery]
+      summary: Delete an equipment item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
+  /bakery/portfolio:
+    get:
+      operationId: listPortfolio
+      tags: [bakery]
+      summary: List portfolio entries
+      responses:
+        "200":
+          description: Portfolio entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioItem"
+    post:
+      operationId: createPortfolioItem
+      tags: [bakery]
+      summary: Add a portfolio entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPortfolioItem"
+      responses:
+        "201":
+          description: Created portfolio entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioItem"
+  /bakery/portfolio/{id}:
+    patch:
+      operationId: updatePortfolioItem
+      tags: [bakery]
+      summary: Update a portfolio entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PortfolioItemUpdate"
+      responses:
+        "200":
+          description: Updated portfolio entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioItem"
+    delete:
+      operationId: deletePortfolioItem
+      tags: [bakery]
+      summary: Delete a portfolio entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
+  /bakery/orders:
+    get:
+      operationId: listOrders
+      tags: [bakery]
+      summary: List orders
+      responses:
+        "200":
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [bakery]
+      summary: Create an order from checkout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewOrder"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /bakery/orders/{id}/status:
+    patch:
+      operationId: updateOrderStatus
+      tags: [bakery]
+      summary: Update an order's status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderStatusUpdate"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /bakery/orders/{id}:
+    delete:
+      operationId: deleteOrder
+      tags: [bakery]
+      summary: Delete an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
   /bakery/quote:
     post:
       operationId: calculateCakeQuote
@@ -151,8 +379,20 @@ components:
           type: number
         cost:
           type: number
+        previousCost:
+          type: number
+          nullable: true
         status:
           type: string
+        imageUrl:
+          type: string
+          nullable: true
+        measureUnit:
+          type: string
+          nullable: true
+        unitsPerMeasure:
+          type: number
+          nullable: true
       required: [id, name, category, unit, quantity, reorderAt, cost, status]
     InventoryInput:
       type: object
@@ -169,7 +409,40 @@ components:
           type: number
         cost:
           type: number
+        measureUnit:
+          type: string
+          nullable: true
+        unitsPerMeasure:
+          type: number
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
       required: [name, category, unit, quantity, reorderAt, cost]
+    InventoryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        unit:
+          type: string
+        quantity:
+          type: number
+        reorderAt:
+          type: number
+        cost:
+          type: number
+        measureUnit:
+          type: string
+          nullable: true
+        unitsPerMeasure:
+          type: number
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
     EquipmentItem:
       type: object
       properties:
@@ -183,7 +456,77 @@ components:
           type: string
         nextService:
           type: string
+        imageUrl:
+          type: string
+          nullable: true
       required: [id, name, category, status, nextService]
+    EquipmentInput:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+        nextService:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+      required: [name, category]
+    EquipmentUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+        nextService:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+    PortfolioItem:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        caption:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+        createdAt:
+          type: string
+      required: [id, title, imageUrl, createdAt]
+    NewPortfolioItem:
+      type: object
+      properties:
+        title:
+          type: string
+        caption:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+      required: [title, imageUrl]
+    PortfolioItemUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        caption:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
     CakeQuoteInput:
       type: object
       properties:
@@ -228,4 +571,88 @@ components:
         amount:
           type: number
       required: [label, amount]
+    Order:
+      type: object
+      properties:
+        id:
+          type: number
+        reference:
+          type: string
+        customerName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          nullable: true
+        eventDate:
+          type: string
+          nullable: true
+        fulfillment:
+          type: string
+        address:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        channel:
+          type: string
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteLineItem"
+        subtotal:
+          type: number
+        serviceFee:
+          type: number
+        total:
+          type: number
+        status:
+          type: string
+        createdAt:
+          type: string
+      required: [id, reference, customerName, phone, fulfillment, channel, lineItems, subtotal, serviceFee, total, status, createdAt]
+    NewOrder:
+      type: object
+      properties:
+        reference:
+          type: string
+        customerName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          nullable: true
+        eventDate:
+          type: string
+          nullable: true
+        fulfillment:
+          type: string
+        address:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        channel:
+          type: string
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteLineItem"
+        subtotal:
+          type: number
+        serviceFee:
+          type: number
+        total:
+          type: number
+      required: [reference, customerName, phone, fulfillment, channel, lineItems, subtotal, serviceFee, total]
+    OrderStatusUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
 

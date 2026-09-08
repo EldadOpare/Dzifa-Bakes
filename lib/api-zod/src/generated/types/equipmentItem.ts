@@ -12,4 +12,5 @@ export interface EquipmentItem {
   category: string;
   status: string;
   nextService: string;
+  imageUrl?: string | null;
 }
