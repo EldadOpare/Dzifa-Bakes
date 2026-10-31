@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, ClipboardList, Mail, MessageCircle, RotateCcw, Store, Truck } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, ClipboardList, MessageCircle, RotateCcw, Store, Truck } from 'lucide-react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'wouter';
 import { useCreateOrder } from '@workspace/api-client-react';
 import type { CakeQuote } from '@workspace/api-client-react';
 import { defaultQuoteInput, fallbackQuote, money, readStoredCart, storeCart, studioContact, type CartEntry } from '../lib/bakery-data';
-import logo from '@assets/logo.jpg';
+import { CakePreview } from '@/components/cake3d/CakePreview';
+import { nearestColourName } from '@/lib/cake-design';
+import logo from '@assets/logo.png';
 
 type InvoicePageProps = { cart: CartEntry | null; onClear: () => void };
 type Fulfillment = 'pickup' | 'delivery';
@@ -37,7 +39,7 @@ function buildOrderText(quote: CakeQuote, details: OrderDetails, reference: stri
       ? `Delivery to: ${details.address || 'address to confirm'}`
       : 'Pickup at the Osu studio';
   return [
-    `New cake order — Dzilicious Bakes & More (ref ${reference})`,
+    `New cake order — Dzilicious Bakery & More (ref ${reference})`,
     '',
     `Name: ${details.name}`,
     `Phone: ${details.phone}`,
@@ -60,7 +62,8 @@ function buildOrderText(quote: CakeQuote, details: OrderDetails, reference: stri
 export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
   const [cart, setCart] = useState<CartEntry | null>(() => propCart ?? readStoredCart() ?? { quote: fallbackQuote(defaultQuoteInput) });
   const [details, setDetails] = useState<OrderDetails>(blankDetails);
-  const [sentVia, setSentVia] = useState<'whatsapp' | 'email' | null>(null);
+  const [sent, setSent] = useState(false);
+  const [step, setStep] = useState(0);
   const [showValidation, setShowValidation] = useState(false);
   const reference = useMemo(() => `DZ-${Date.now().toString(36).toUpperCase()}`, []);
   const createOrder = useCreateOrder();
@@ -83,9 +86,18 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
 
   const isValid = details.name.trim().length > 0 && details.phone.trim().length > 0 && (details.fulfillment === 'pickup' || details.address.trim().length > 0);
 
-  const checkout = (channel: 'whatsapp' | 'email') => {
+  const goNext = () => {
+    if (step === 1 && !isValid) {
+      setShowValidation(true);
+      return;
+    }
+    setStep((current) => Math.min(2, current + 1));
+  };
+
+  const checkout = () => {
     if (!isValid) {
       setShowValidation(true);
+      setStep(1);
       return;
     }
     createOrder.mutate({
@@ -98,7 +110,7 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
         fulfillment: details.fulfillment,
         address: details.fulfillment === 'delivery' ? details.address : undefined,
         notes: details.notes || undefined,
-        channel,
+        channel: 'whatsapp',
         lineItems: quote.lineItems,
         subtotal: quote.subtotal,
         serviceFee: quote.serviceFee,
@@ -108,39 +120,91 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
       onError: (error) => console.error('Could not save order', error),
     });
     const text = buildOrderText(quote, details, reference);
-    const url =
-      channel === 'whatsapp'
-        ? `https://wa.me/${studioContact.whatsappNumber}?text=${encodeURIComponent(text)}`
-        : `mailto:${studioContact.email}?subject=${encodeURIComponent(`New cake order from ${details.name} (${reference})`)}&body=${encodeURIComponent(text)}`;
-    window.open(url, channel === 'whatsapp' ? '_blank' : '_self');
-    setSentVia(channel);
+    const url = `https://wa.me/${studioContact.whatsappNumber}?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+    setSent(true);
   };
 
+  const design = cart.design;
+  const summary: [string, string][] = design ? [
+    ['Shape', design.shape],
+    ['Size', `${design.size} · ${design.layers} ${design.layers === 1 ? 'layer' : 'layers'}${design.tiers > 1 ? ` · ${design.tiers} tiers` : ''}`],
+    ['Flavour', design.flavour],
+    ['Filling', design.frosting],
+    ['Icing', `${design.icingStyle} · ${nearestColourName(design.icingColour)}`],
+    ['Drip', design.drip === 'No drip' ? 'None' : design.drip.replace(' drip', '')],
+    ['Finish', design.topper === 'Hand-piped message' && design.message.trim() ? `“${design.message.trim()}”` : design.topper],
+  ] : [];
+
   return (
-    <main className="mx-auto max-w-[1120px] px-5 py-9 sm:px-8 lg:px-12 lg:py-16">
-      <Link href="/" className="mb-10 flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground" data-testid="link-back-builder"><ArrowLeft size={14} /> Back to cake builder</Link>
-      <div className="grid gap-12 lg:grid-cols-[1fr_380px]">
-        <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}>
-          <img src={logo} alt="Dzilicious Bakes & More" className="mb-6 h-14 w-14 rounded-full object-cover" />
+    <main className="mx-auto max-w-[1180px] px-5 pb-20 pt-9 sm:px-8 lg:px-12 lg:pt-14">
+      <Link href="/" className="mb-8 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground" data-testid="link-back-builder"><ArrowLeft size={14} /> Back to the builder</Link>
+
+      <motion.header initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+        <div>
           <p className="font-display text-lg text-primary">Your considered estimate</p>
-          <h1 className="mt-3 font-display font-medium text-5xl tracking-[-.05em] sm:text-6xl">A little piece<br /><em className="not-italic text-primary">of the day.</em></h1>
-          <p className="mt-5 max-w-md text-sm leading-6 text-muted-foreground">This is a working quote, not a payment. Share your details below and send it straight to the studio, Dzifa will personally confirm availability, delivery and the final finish.</p>
+          <h1 className="mt-2 font-display text-4xl font-medium tracking-[-.04em] sm:text-5xl">Review your quote</h1>
+        </div>
+        <p className="max-w-sm text-sm leading-6 text-muted-foreground">A working quote, not a payment. Add your details and send it to the studio, and we’ll personally confirm availability and the final finish.</p>
+      </motion.header>
 
-          {cart.image && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .1 }} className="mt-8">
-              <img src={cart.image} alt={cart.title ?? 'The cake you chose'} className="h-56 w-full rounded-2xl object-cover sm:h-72" data-testid="img-chosen-cake" />
-              {cart.title && <p className="mt-3 text-sm text-muted-foreground">Based on <span className="font-semibold text-foreground">{cart.title}</span></p>}
-            </motion.div>
-          )}
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)] lg:gap-14">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08 }} className="lg:sticky lg:top-28 lg:self-start">
+          <div className="relative h-[min(38vh,340px)] min-h-[260px] overflow-hidden rounded-[2rem] border border-border bg-gradient-to-b from-white to-muted">
+            {design ? (
+              <CakePreview design={design} />
+            ) : cart.image ? (
+              <img src={cart.image} alt={cart.title ?? 'The cake you chose'} className="h-full w-full object-cover" data-testid="img-chosen-cake" />
+            ) : (
+              <div className="grid h-full place-items-center"><img src={logo} alt="Dzilicious Bakery & More" className="h-28 w-28 object-contain mix-blend-multiply" /></div>
+            )}
+            {design && <span className="pointer-events-none absolute bottom-3 left-0 right-0 text-center text-[11px] tracking-wide text-muted-foreground">Drag to turn</span>}
+          </div>
 
-          <div className="mt-10 border-y border-border py-3 font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Dzilicious Bakes & More · Custom cake brief · Ref {reference}</div>
-          <div className="divide-y divide-border">{quote.lineItems.map((line) => <div key={line.label} className="flex justify-between gap-5 py-4 text-sm"><span>{line.label}</span><span className="font-mono-ui text-xs">{line.amount ? money(line.amount) : 'Included'}</span></div>)}</div>
-          <button onClick={clear} className="mt-5 flex items-center gap-2 text-xs text-muted-foreground hover:text-destructive" data-testid="button-clear-quote"><RotateCcw size={14} /> Start a new design</button>
+          <div className="mt-4 rounded-[1.5rem] border border-border px-6 py-5">
+            <div className="flex items-center justify-between">
+              <h2 className="font-display text-lg">{cart.title ? `Based on ${cart.title}` : 'Your design'}</h2>
+              <button onClick={clear} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive" data-testid="button-clear-quote"><RotateCcw size={13} /> Start over</button>
+            </div>
+            {summary.length > 0 && (
+              <dl className="mt-3 divide-y divide-border text-sm">
+                {summary.map(([label, value]) => <div key={label} className="flex justify-between gap-6 py-1.5 text-[13px]"><dt className="text-muted-foreground">{label}</dt><dd className="text-right">{value}</dd></div>)}
+              </dl>
+            )}
+          </div>
+        </motion.div>
 
-          <div className="mt-12 border-t border-border pt-10">
-            <p className="font-display text-lg text-primary">Your details</p>
-            <h2 className="mt-2 font-display font-medium text-3xl tracking-[-.03em]">Who is this for?</h2>
-            <div className="mt-7 grid gap-5 sm:grid-cols-2">
+        <div>
+          <div className="mb-6 flex items-center gap-2 border-b border-border pb-4">
+            {['Your quote', 'Your details', 'Send'].map((label, index) => (
+              <button key={label} onClick={() => (index <= step || isValid) && setStep(index)} className={`flex flex-1 items-center gap-2 text-left text-xs ${index === step ? 'text-foreground' : 'text-muted-foreground'}`} data-testid={`button-invoice-step-${index + 1}`}>
+                <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-[11px] ${index < step ? 'border-primary bg-primary text-primary-foreground' : index === step ? 'border-foreground' : 'border-border'}`}>{index < step ? <Check size={13} /> : `0${index + 1}`}</span>
+                <span className="hidden sm:inline">{label}</span>
+              </button>
+            ))}
+          </div>
+
+          <motion.div key={step} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .35 }}>
+            {step === 0 && (
+          <Panel title="Your quote" aside={<span className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">Valid 7 days</span>}>
+            <p className="text-xs tabular-nums text-muted-foreground">Ref {reference}</p>
+            <div className="mt-4 divide-y divide-border">
+              {quote.lineItems.map((line) => <div key={line.label} className="flex justify-between gap-5 py-3 text-sm"><span>{line.label}</span><span className="tabular-nums text-xs text-muted-foreground">{line.amount ? money(line.amount) : 'Included'}</span></div>)}
+            </div>
+            <div className="mt-2 space-y-2 border-t border-border pt-4 text-sm">
+              <div className="flex justify-between"><span className="text-muted-foreground">Cake & finishing</span><span className="tabular-nums text-xs">{money(quote.subtotal)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Care & coordination (8%)</span><span className="tabular-nums text-xs">{money(quote.serviceFee)}</span></div>
+            </div>
+            <div className="mt-5 flex items-end justify-between rounded-2xl bg-primary px-6 py-5 text-primary-foreground">
+              <span className="text-sm text-primary-foreground/75">Estimated total</span>
+              <span className="font-display text-4xl tracking-[-.04em]" data-testid="text-invoice-total">{money(quote.total)}</span>
+            </div>
+          </Panel>
+
+            )}
+            {step === 1 && (
+          <Panel title="Your details">
+            <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Full name" required value={details.name} onChange={(value) => update('name', value)} invalid={showValidation && !details.name.trim()} testId="input-order-name" />
               <Field label="Phone / WhatsApp" required type="tel" placeholder="+233 ..." value={details.phone} onChange={(value) => update('phone', value)} invalid={showValidation && !details.phone.trim()} testId="input-order-phone" />
               <Field label="Email (optional)" type="email" value={details.email} onChange={(value) => update('email', value)} testId="input-order-email" />
@@ -154,58 +218,74 @@ export function InvoicePage({ cart: propCart, onClear }: InvoicePageProps) {
                 <FulfillmentOption label="Delivery" icon={Truck} active={details.fulfillment === 'delivery'} onClick={() => update('fulfillment', 'delivery')} testId="button-fulfillment-delivery" />
               </div>
               {details.fulfillment === 'pickup' ? (
-                <p className="mt-3 text-xs text-muted-foreground">Collect from the Dzilicious Bakes & More studio in Osu.</p>
+                <p className="mt-3 text-xs text-muted-foreground">Collect from the Dzilicious Bakery & More studio in Osu.</p>
               ) : (
-                <div className="mt-3">
+                <div className="mt-4">
                   <Field label="Delivery address" required value={details.address} onChange={(value) => update('address', value)} invalid={showValidation && !details.address.trim()} testId="input-order-address" />
                 </div>
               )}
             </div>
 
-            <label className="mt-6 block text-xs font-semibold">Anything else? Allergies, message on the cake, timing constraints
+            <label className="mt-6 block text-xs font-semibold">Anything else? Allergies, timing, special requests
               <textarea
                 value={details.notes}
                 onChange={(event) => update('notes', event.target.value)}
                 rows={3}
-                className="mt-2 w-full resize-none rounded-md border border-border bg-background px-3 py-2.5 text-sm font-normal outline-none focus:border-primary"
+                className="mt-2 w-full resize-none rounded-xl border border-border bg-background px-3.5 py-3 text-sm font-normal outline-none focus:border-primary"
                 data-testid="textarea-order-notes"
               />
             </label>
-          </div>
-        </motion.div>
+          </Panel>
 
-        <motion.aside initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .12 }} className="h-fit border border-border bg-card p-6 sm:p-8 lg:sticky lg:top-28">
-          <div className="flex items-center justify-between"><span className="font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Estimated total</span><span className="rounded-full bg-accent/25 px-2 py-1 font-mono-ui text-[9px] uppercase tracking-[.1em] text-accent-foreground">Valid 7 days</span></div>
-          <div className="mt-4 font-display text-4xl tracking-[-.04em]" data-testid="text-invoice-total">{money(quote.total)}</div>
-          <div className="mt-7 space-y-3 border-t border-border pt-5 text-xs">
-            <div className="flex justify-between"><span className="text-muted-foreground">Cake & finishing</span><span className="font-mono-ui">{money(quote.subtotal)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Care & coordination</span><span className="font-mono-ui">{money(quote.serviceFee)}</span></div>
-          </div>
-
-          <div className="mt-7 border-t border-border pt-5">
-            {sentVia ? (
-              <div>
-                <div className="flex items-center gap-2 text-sm font-semibold text-primary"><Check size={16} /> Order sent {sentVia === 'whatsapp' ? 'to WhatsApp' : 'by email'}.</div>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground">We’ll be in touch within one studio day to confirm the details.</p>
-              </div>
-            ) : (
-              <div className="space-y-2.5">
-                {showValidation && !isValid && (
-                  <p className="text-xs text-destructive" data-testid="text-checkout-validation">Add your name, phone{details.fulfillment === 'delivery' ? ' and delivery address' : ''} to send this order.</p>
-                )}
-                <button onClick={() => checkout('whatsapp')} className="flex w-full items-center justify-center gap-2 rounded-md bg-primary py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90" data-testid="button-checkout-whatsapp">
-                  <MessageCircle size={15} /> Order via WhatsApp
-                </button>
-                <button onClick={() => checkout('email')} className="flex w-full items-center justify-center gap-2 rounded-md border border-border py-3 text-sm font-semibold text-foreground hover:bg-muted" data-testid="button-checkout-email">
-                  <Mail size={15} /> Order via email
-                </button>
-              </div>
             )}
+            {step === 2 && (
+              <Panel title="Send to the studio">
+                {sent ? (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-semibold text-primary"><Check size={16} /> Order sent to WhatsApp.</div>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">We’ll be in touch within one studio day to confirm the details.</p>
+                  </div>
+                ) : (
+                  <div>
+                    <dl className="divide-y divide-border text-sm">
+                      <div className="flex justify-between gap-6 py-2.5"><dt className="text-muted-foreground">For</dt><dd>{details.name || '—'}</dd></div>
+                      <div className="flex justify-between gap-6 py-2.5"><dt className="text-muted-foreground">Phone</dt><dd>{details.phone || '—'}</dd></div>
+                      {details.eventDate && <div className="flex justify-between gap-6 py-2.5"><dt className="text-muted-foreground">Event date</dt><dd>{details.eventDate}</dd></div>}
+                      <div className="flex justify-between gap-6 py-2.5"><dt className="text-muted-foreground">Reaches you by</dt><dd>{details.fulfillment === 'delivery' ? `Delivery · ${details.address}` : 'Pickup in Osu'}</dd></div>
+                      <div className="flex justify-between gap-6 py-2.5"><dt className="text-muted-foreground">Estimated total</dt><dd className="font-semibold">{money(quote.total)}</dd></div>
+                    </dl>
+                    {showValidation && !isValid && (
+                      <p className="mt-4 text-xs text-destructive" data-testid="text-checkout-validation">Add your name, phone{details.fulfillment === 'delivery' ? ' and delivery address' : ''} to send this order.</p>
+                    )}
+                    <button onClick={checkout} className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90" data-testid="button-checkout-whatsapp">
+                      <MessageCircle size={15} /> Send order on WhatsApp
+                    </button>
+                    <p className="mt-4 text-xs leading-5 text-muted-foreground">No payment is taken here. Sending your brief starts a real conversation with the studio at {studioContact.whatsappDisplay}.</p>
+                  </div>
+                )}
+              </Panel>
+            )}
+          </motion.div>
+
+          <div className="mt-6 flex justify-between border-t border-border pt-5">
+            <button onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0} className="flex items-center gap-2 text-sm text-muted-foreground disabled:opacity-30" data-testid="button-invoice-back"><ChevronLeft size={16} /> Back</button>
+            {step < 2 && <button onClick={goNext} className="flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground" data-testid="button-invoice-next">{step === 0 ? 'Add your details' : 'Continue'} <ChevronRight size={16} /></button>}
           </div>
-          <p className="mt-5 text-[11px] leading-5 text-muted-foreground">No payment is taken here. Sending your brief starts a real conversation with the studio at {studioContact.whatsappDisplay}.</p>
-        </motion.aside>
+        </div>
       </div>
     </main>
+  );
+}
+
+function Panel({ title, aside, children }: { title: string; aside?: ReactNode; children: ReactNode }) {
+  return (
+    <section className="rounded-[1.5rem] border border-border bg-card p-6 sm:p-8">
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <h2 className="font-display text-xl tracking-[-.02em]">{title}</h2>
+        {aside}
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -236,7 +316,7 @@ function Field({
         placeholder={placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className={`mt-2 h-11 w-full rounded-md border bg-background px-3 text-sm font-normal outline-none focus:border-primary ${invalid ? 'border-destructive' : 'border-border'}`}
+        className={`mt-2 h-11 w-full rounded-xl border bg-background px-3 text-sm font-normal outline-none focus:border-primary ${invalid ? 'border-destructive' : 'border-border'}`}
         data-testid={testId}
       />
       {required && invalid && <span className="mt-1 block text-[11px] font-normal text-destructive">Required</span>}
@@ -249,7 +329,7 @@ function FulfillmentOption({ label, icon: Icon, active, onClick, testId }: { lab
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm transition-colors ${active ? 'border-primary bg-primary/7 text-foreground' : 'border-border text-muted-foreground hover:border-foreground/35'}`}
+      className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm transition-colors ${active ? 'border-primary bg-primary/7 text-foreground' : 'border-border text-muted-foreground hover:border-foreground/35'}`}
       data-testid={testId}
     >
       <Icon size={15} /> {label}

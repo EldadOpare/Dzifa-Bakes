@@ -14,5 +14,9 @@ export interface CakeQuoteInput {
   frosting: string;
   topper: string;
   drip: string;
+  shape?: string;
+  icingColour?: string;
+  icingStyle?: string;
+  message?: string;
   equipment: string[];
 }

@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Boxes, Calculator, Camera, ClipboardList, Factory, LogOut, Menu, ShoppingBag, X } from 'lucide-react';
+import { Boxes, Calculator, ClipboardList, Factory, LogOut, Menu, ShoppingBag, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
 import { SiteFooter } from './SiteFooter';
 import { supabase } from '../lib/supabase';
 import { useSession } from '../lib/use-session';
-import logo from '@assets/logo.jpg';
+import logo from '@assets/logo.png';
 
 type AppShellProps = { children: ReactNode; cartCount?: number };
 
@@ -21,7 +21,6 @@ const staffLinks = [
   { href: '/admin/inventory', label: 'Inventory', icon: Boxes },
   { href: '/admin/calculator', label: 'Cost calculator', icon: Calculator },
   { href: '/admin/equipment', label: 'Equipment', icon: Factory },
-  { href: '/admin/portfolio', label: 'Portfolio', icon: Camera },
 ];
 
 export function AppShell({ children, cartCount = 0 }: AppShellProps) {
@@ -42,11 +41,11 @@ export function AppShell({ children, cartCount = 0 }: AppShellProps) {
   };
 
   return (
-    <div className="page-grain min-h-[100dvh] bg-background text-foreground">
+    <div className="min-h-[100dvh] bg-background text-foreground">
       <header className="sticky top-0 z-40 px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5 lg:px-8">
         <div className="mx-auto flex h-20 max-w-[1080px] items-center justify-between rounded-full border border-border bg-card/95 px-3 backdrop-blur-md sm:px-5">
           <Link href="/" className="flex items-center" data-testid="link-brand">
-            <img src={logo} alt="Dzilicious Bakes & More" className="h-16 w-16 rounded-full object-cover" />
+            <img src={logo} alt="Dzilicious Bakery & More" className="h-[4.5rem] w-auto object-contain mix-blend-multiply" />
           </Link>
 
           {isAdmin ? (

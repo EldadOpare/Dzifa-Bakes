@@ -37,7 +37,7 @@ export function ProductPage({ onAddToCart }: ProductPageProps) {
       </Link>
       <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
         <motion.div initial={{ opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .6 }} className="aspect-[4/3] overflow-hidden rounded-2xl lg:sticky lg:top-28 lg:aspect-[4/5]">
-          <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+          <img src={item.image} alt={item.title} className="h-full w-full object-cover" style={{ objectPosition: 'center 35%' }} />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .1 }}>
           <span className="font-display text-2xl font-medium text-primary">From {money(item.price)}</span>
@@ -75,7 +75,7 @@ export function ProductPage({ onAddToCart }: ProductPageProps) {
               </button>
             ) : (
               <a
-                href={`https://wa.me/${studioContact.whatsappNumber}?text=${encodeURIComponent(`Hi Dzilicious Bakes & More, I'd like to ask about ${item.title}.`)}`}
+                href={`https://wa.me/${studioContact.whatsappNumber}?text=${encodeURIComponent(`Hi Dzilicious Bakery & More, I'd like to ask about ${item.title}.`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-border py-3.5 text-sm font-semibold text-foreground hover:bg-muted"

@@ -388,6 +388,10 @@ export const CalculateCakeQuoteBody = zod.object({
   "frosting": zod.string(),
   "topper": zod.string(),
   "drip": zod.string(),
+  "shape": zod.string().optional(),
+  "icingColour": zod.string().optional(),
+  "icingStyle": zod.string().optional(),
+  "message": zod.string().optional(),
   "equipment": zod.array(zod.string())
 })
 

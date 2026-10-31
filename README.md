@@ -1,4 +1,4 @@
-# Dzilicious Bakes & More
+# Dzilicious Bakery & More
 
 Premium bakery storefront and operations workspace for guided cake quotes, invoices, inventory, and equipment care.
 

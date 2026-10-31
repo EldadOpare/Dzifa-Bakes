@@ -1,5 +1,11 @@
 # Supabase pauses free projects after 7 days with no activity.
-# This pings the db every few days so that never happens.
+# This pings the project over HTTPS every few days so that never happens.
+#
+# It uses the REST API rather than psql on purpose: Supabase's direct database
+# host (db.<ref>.supabase.co) is IPv6-only, and GitHub Actions runners are
+# IPv4-only, so a psql ping can never connect from here.
+#
+# Needs two repository secrets: SUPABASE_URL and SUPABASE_ANON_KEY.
 name: Supabase keepalive
 
 on:
@@ -11,10 +17,16 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Install postgresql-client
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
-
-      - name: Ping database
+      - name: Ping Supabase
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: psql "$DATABASE_URL" -c "select 1;"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "SUPABASE_URL and SUPABASE_ANON_KEY secrets must be set" >&2
+            exit 1
+          fi
+          curl --fail --silent --show-error --retry 3 --retry-delay 5 \
+            "$SUPABASE_URL/rest/v1/inventory?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY"

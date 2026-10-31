@@ -3,18 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Dzilicious Bakes & More</title>
-    <meta name="description" content="Guided custom cake quotes, invoices, and bakery operations for Dzilicious Bakes & More." />
+    <title>Dzilicious Bakery & More</title>
+    <meta name="description" content="Guided custom cake quotes, invoices, and bakery operations for Dzilicious Bakery & More." />
     <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Dzilicious Bakes & More" />
-    <meta property="og:description" content="Guided custom cake quotes, invoices, and bakery operations for Dzilicious Bakes & More." />
+    <meta property="og:title" content="Dzilicious Bakery & More" />
+    <meta property="og:description" content="Guided custom cake quotes, invoices, and bakery operations for Dzilicious Bakery & More." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logo.jpg" />
+    <meta property="og:image" content="/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Dzilicious Bakes & More" />
-    <meta name="twitter:description" content="Guided custom cake quotes, invoices, and bakery operations for Dzilicious Bakes & More." />
-    <meta name="twitter:image" content="/logo.jpg" />
-    <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+    <meta name="twitter:title" content="Dzilicious Bakery & More" />
+    <meta name="twitter:description" content="Guided custom cake quotes, invoices, and bakery operations for Dzilicious Bakery & More." />
+    <meta name="twitter:image" content="/og.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
@@ -37,10 +37,10 @@
         pointer-events: none;
       }
       .app-loader__mark {
-        width: 96px;
-        height: 96px;
-        border-radius: 999px;
-        object-fit: cover;
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        mix-blend-mode: multiply;
         animation: app-loader-in .7s cubic-bezier(.2, .9, .3, 1.2) both,
           app-loader-breathe 3s ease-in-out .7s infinite;
       }
@@ -75,7 +75,7 @@
   </head>
   <body>
     <div id="app-loader" aria-hidden="true">
-      <img class="app-loader__mark" src="/logo.jpg" alt="" />
+      <img class="app-loader__mark" src="/logo.png" alt="" />
       <div class="app-loader__bar"><span></span></div>
     </div>
     <div id="root"></div>

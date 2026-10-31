@@ -158,6 +158,10 @@ router.post("/bakery/quote", (req, res) => {
   const frostingPrice: Record<string, number> = { "Swiss meringue": 0, "Cream cheese": 45, "Whipped ganache": 85, "Buttercream": 25 };
   const topperPrice: Record<string, number> = { None: 0, "Fresh florals": 120, "Sugar inscription": 80, "Acrylic name": 150 };
   const dripPrice: Record<string, number> = { None: 0, Chocolate: 55, Caramel: 65, "Gold shimmer": 95 };
+  const shapePrice: Record<string, number> = { Round: 0, Square: 0, Rectangle: 40, Hexagon: 60, Octagon: 60, Heart: 90 };
+  const icingStylePrice: Record<string, number> = { Smooth: 0, "Rustic swirl": 30, Ridged: 20, Ruffled: 120, "Semi-naked": 0, Naked: 0, "Rosette border": 80, "Pearl border": 50 };
+  const newTopperPrice: Record<string, number> = { "Fresh flowers": 80, "Fresh berries": 70, Macarons: 90, "Hand-piped message": 35, "Chocolate sails": 95, "Minimal finish": 0 };
+  const newDripPrice: Record<string, number> = { "No drip": 0, "Dark chocolate drip": 40, "White chocolate drip": 40, "Gold caramel drip": 60, "Raspberry drip": 45 };
 
   const base = sizeBase[input.size] ?? 620;
   const layer = Math.max(0, input.layers - 2) * 110;
@@ -168,10 +172,14 @@ router.post("/bakery/quote", (req, res) => {
     { label: `${input.tiers} ${input.tiers === 1 ? "tier" : "tiers"}`, amount: tier },
     { label: `${input.flavour} sponge`, amount: flavourPrice[input.flavour] ?? 0 },
     { label: `${input.frosting} finish`, amount: frostingPrice[input.frosting] ?? 0 },
-    { label: input.topper, amount: topperPrice[input.topper] ?? 0 },
-    { label: input.drip === "None" ? "No drip" : `${input.drip} drip`, amount: dripPrice[input.drip] ?? 0 },
+    { label: input.topper, amount: topperPrice[input.topper] ?? newTopperPrice[input.topper] ?? 0 },
+    { label: input.drip === "None" ? "No drip" : /drip$/.test(input.drip) ? input.drip : `${input.drip} drip`, amount: dripPrice[input.drip] ?? newDripPrice[input.drip] ?? 0 },
+    { label: `${input.shape ?? "Round"} shape`, amount: shapePrice[input.shape ?? "Round"] ?? 0 },
+    { label: `${input.icingStyle ?? "Smooth"} icing`, amount: icingStylePrice[input.icingStyle ?? "Smooth"] ?? 0 },
+    ...(input.icingColour ? [{ label: `Icing colour: ${input.icingColour.toUpperCase()}`, amount: 0 }] : []),
+    ...(input.topper === "Hand-piped message" && input.message ? [{ label: `Message: “${input.message.replace(/\s+/g, " ").slice(0, 60)}”`, amount: 0 }] : []),
     ...(input.equipment.includes("Rush finish") ? [{ label: "Rush finish", amount: 220 }] : []),
-  ].filter((line) => line.amount > 0);
+  ].filter((line) => line.amount > 0 || line.label.startsWith("Icing colour") || line.label.startsWith("Message"));
   const subtotal = lines.reduce((sum, line) => sum + line.amount, 0);
   const serviceFee = Math.round(subtotal * 0.08);
   res.json(CalculateCakeQuoteResponse.parse({ lineItems: lines, subtotal, serviceFee, total: subtotal + serviceFee }));

@@ -3,7 +3,7 @@ import { LogIn } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useLocation } from 'wouter';
 import { supabase } from '../lib/supabase';
-import logo from '@assets/logo.jpg';
+import logo from '@assets/logo.png';
 
 export function LoginPage() {
   const [, navigate] = useLocation();
@@ -32,7 +32,7 @@ export function LoginPage() {
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-sm flex-col items-center justify-center px-5 py-16">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="w-full">
-        <img src={logo} alt="Dzilicious Bakes & More" className="mx-auto h-14 w-14 rounded-full object-cover" />
+        <img src={logo} alt="Dzilicious Bakery & More" className="mx-auto h-28 w-28 object-contain mix-blend-multiply" />
         <h1 className="mt-6 text-center font-display font-medium text-3xl tracking-[-.03em]">Staff sign in</h1>
         <p className="mt-2 text-center text-sm text-muted-foreground">This area is for the studio team only.</p>
 

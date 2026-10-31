@@ -544,6 +544,14 @@ components:
           type: string
         drip:
           type: string
+        shape:
+          type: string
+        icingColour:
+          type: string
+        icingStyle:
+          type: string
+        message:
+          type: string
         equipment:
           type: array
           items:

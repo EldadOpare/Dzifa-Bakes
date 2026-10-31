@@ -19,7 +19,6 @@ const InventoryPage = lazy(() => import('./pages/InventoryPage').then((m) => ({ 
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage').then((m) => ({ default: m.CalculatorPage })));
 const EquipmentPage = lazy(() => import('./pages/EquipmentPage').then((m) => ({ default: m.EquipmentPage })));
 const OrdersPage = lazy(() => import('./pages/OrdersPage').then((m) => ({ default: m.OrdersPage })));
-const PortfolioAdminPage = lazy(() => import('./pages/PortfolioAdminPage').then((m) => ({ default: m.PortfolioAdminPage })));
 
 const queryClient = new QueryClient();
 
@@ -38,7 +37,6 @@ function Router({ cart, setCart }: { cart: CartEntry | null; setCart: (cart: Car
             <Route path="/admin/inventory" component={() => <RequireAuth><InventoryPage /></RequireAuth>} />
             <Route path="/admin/calculator" component={() => <RequireAuth><CalculatorPage /></RequireAuth>} />
             <Route path="/admin/equipment" component={() => <RequireAuth><EquipmentPage /></RequireAuth>} />
-            <Route path="/admin/portfolio" component={() => <RequireAuth><PortfolioAdminPage /></RequireAuth>} />
             <Route path="/invoice" component={() => <InvoicePage cart={cart} onClear={() => setCart(null)} />} />
             <Route component={NotFound} />
           </Switch>
@@ -54,6 +52,8 @@ function RouteFallback() {
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
+  // A new page should start at the top, not wherever the last one was scrolled to.
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [location]);
   return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;
 }
 
