@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import { AppShell } from './components/AppShell';
+import { AdminLayout } from './components/admin/AdminLayout';
 import { RequireAuth } from './components/RequireAuth';
 import { InvoicePage } from './pages/InvoicePage';
 import { LoginPage } from './pages/LoginPage';
@@ -17,26 +18,44 @@ import { readStoredCart, storeCart, type CartEntry } from './lib/bakery-data';
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
 const InventoryPage = lazy(() => import('./pages/InventoryPage').then((m) => ({ default: m.InventoryPage })));
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage').then((m) => ({ default: m.CalculatorPage })));
-const EquipmentPage = lazy(() => import('./pages/EquipmentPage').then((m) => ({ default: m.EquipmentPage })));
 const OrdersPage = lazy(() => import('./pages/OrdersPage').then((m) => ({ default: m.OrdersPage })));
 
 const queryClient = new QueryClient();
 
 function Router({ cart, setCart }: { cart: CartEntry | null; setCart: (cart: CartEntry | null) => void }) {
+  const [location] = useLocation();
+  const addToCart = (entry: CartEntry) => { setCart(entry); storeCart(entry); };
+
+  // The studio side has its own layout: a sidebar instead of the storefront's top bar and footer.
+  if (location.startsWith('/admin')) {
+    return (
+      <RoutedErrorBoundary>
+        <RequireAuth>
+          <AdminLayout>
+            <Suspense fallback={<RouteFallback />}>
+              <Switch>
+                <Route path="/admin" component={AdminDashboard} />
+                <Route path="/admin/orders" component={OrdersPage} />
+                <Route path="/admin/inventory" component={InventoryPage} />
+                <Route path="/admin/calculator" component={CalculatorPage} />
+                <Route component={NotFound} />
+              </Switch>
+            </Suspense>
+          </AdminLayout>
+        </RequireAuth>
+      </RoutedErrorBoundary>
+    );
+  }
+
   return (
     <RoutedErrorBoundary>
       <AppShell cartCount={cart ? 1 : 0}>
         <Suspense fallback={<RouteFallback />}>
           <Switch>
-            <Route path="/" component={() => <Storefront onAddToCart={(entry) => { setCart(entry); storeCart(entry); }} />} />
-            <Route path="/cakes/:id" component={() => <ProductPage onAddToCart={(entry) => { setCart(entry); storeCart(entry); }} />} />
+            <Route path="/" component={() => <Storefront onAddToCart={addToCart} />} />
+            <Route path="/cakes/:id" component={() => <ProductPage onAddToCart={addToCart} />} />
             <Route path="/portfolio" component={PortfolioPage} />
             <Route path="/login" component={LoginPage} />
-            <Route path="/admin" component={() => <RequireAuth><AdminDashboard /></RequireAuth>} />
-            <Route path="/admin/orders" component={() => <RequireAuth><OrdersPage /></RequireAuth>} />
-            <Route path="/admin/inventory" component={() => <RequireAuth><InventoryPage /></RequireAuth>} />
-            <Route path="/admin/calculator" component={() => <RequireAuth><CalculatorPage /></RequireAuth>} />
-            <Route path="/admin/equipment" component={() => <RequireAuth><EquipmentPage /></RequireAuth>} />
             <Route path="/invoice" component={() => <InvoicePage cart={cart} onClear={() => setCart(null)} />} />
             <Route component={NotFound} />
           </Switch>

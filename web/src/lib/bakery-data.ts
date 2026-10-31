@@ -1,58 +1,7 @@
-import type {
-  BakerySummary,
-  CakeQuote,
-  CakeQuoteInput,
-  EquipmentItem,
-  InventoryItem,
-} from '@workspace/api-client-react';
+import type { CakeQuote, CakeQuoteInput } from '@workspace/api-client-react';
 import type { ShowcaseItem } from './showcase-data';
 import type { CakeDesign } from '@/components/cake3d/Cake';
 import { dripPrice, icingStylePrice, nearestColourName, shapePrice, topperPrice } from './cake-design';
-
-export const fallbackSummary: BakerySummary = {
-  revenue: 28460,
-  openOrders: 14,
-  lowStockCount: 3,
-  inventoryValue: 8160,
-  weeklyRevenue: [
-    { day: 'Mon', value: 2800 },
-    { day: 'Tue', value: 4100 },
-    { day: 'Wed', value: 3620 },
-    { day: 'Thu', value: 5240 },
-    { day: 'Fri', value: 4680 },
-    { day: 'Sat', value: 6120 },
-    { day: 'Sun', value: 1900 },
-  ],
-};
-
-export const fallbackInventory: InventoryItem[] = [
-  { id: 1,  name: 'Dutch-process cocoa',    category: 'Dry goods',  unit: 'kg',    quantity: 4.8,  reorderAt: 3,  cost: 145, status: 'healthy'  },
-  { id: 2,  name: 'French butter',          category: 'Chilled',    unit: 'kg',    quantity: 7.2,  reorderAt: 8,  cost: 185, status: 'low'      },
-  { id: 3,  name: 'Vanilla bean paste',     category: 'Flavouring', unit: 'jar',   quantity: 12,   reorderAt: 5,  cost: 92,  status: 'healthy'  },
-  { id: 4,  name: 'Gold leaf sheets',       category: 'Finishing',  unit: 'pack',  quantity: 2,    reorderAt: 3,  cost: 260, status: 'low'      },
-  { id: 5,  name: 'Cake boards 10 inch',    category: 'Packaging',  unit: 'pack',  quantity: 31,   reorderAt: 12, cost: 48,  status: 'healthy'  },
-  { id: 6,  name: 'Whipping cream',         category: 'Chilled',    unit: 'litre', quantity: 3.5,  reorderAt: 6,  cost: 58,  status: 'critical' },
-  { id: 7,  name: 'All-purpose flour',      category: 'Dry goods',  unit: 'kg',    quantity: 18,   reorderAt: 8,  cost: 22,  status: 'healthy'  },
-  { id: 8,  name: 'Caster sugar',           category: 'Dry goods',  unit: 'kg',    quantity: 11.5, reorderAt: 5,  cost: 18,  status: 'healthy'  },
-  { id: 9,  name: 'Free-range eggs',        category: 'Chilled',    unit: 'dozen', quantity: 4,    reorderAt: 6,  cost: 35,  status: 'low'      },
-  { id: 10, name: 'Cream cheese',           category: 'Chilled',    unit: 'kg',    quantity: 5.4,  reorderAt: 4,  cost: 110, status: 'healthy'  },
-  { id: 11, name: 'Rosewater extract',      category: 'Flavouring', unit: 'bottle',quantity: 8,    reorderAt: 3,  cost: 75,  status: 'healthy'  },
-  { id: 12, name: 'Pistachio kernels',      category: 'Dry goods',  unit: 'kg',    quantity: 1.2,  reorderAt: 2,  cost: 320, status: 'low'      },
-  { id: 13, name: 'Icing sugar',            category: 'Dry goods',  unit: 'kg',    quantity: 9,    reorderAt: 4,  cost: 20,  status: 'healthy'  },
-  { id: 14, name: 'Cake boxes (assorted)',  category: 'Packaging',  unit: 'pack',  quantity: 22,   reorderAt: 10, cost: 65,  status: 'healthy'  },
-  { id: 15, name: 'Dark chocolate couv.',   category: 'Dry goods',  unit: 'kg',    quantity: 2.8,  reorderAt: 3,  cost: 210, status: 'healthy'  },
-  { id: 16, name: 'Edible rose petals',     category: 'Finishing',  unit: 'pack',  quantity: 1,    reorderAt: 2,  cost: 180, status: 'critical' },
-  { id: 17, name: 'Elderflower cordial',    category: 'Flavouring', unit: 'bottle',quantity: 6,    reorderAt: 4,  cost: 88,  status: 'healthy'  },
-  { id: 18, name: 'Baking soda',            category: 'Dry goods',  unit: 'kg',    quantity: 3.5,  reorderAt: 2,  cost: 12,  status: 'healthy'  },
-];
-
-export const fallbackEquipment: EquipmentItem[] = [
-  { id: 1, name: 'Rational combi oven', category: 'Baking', status: 'operational', nextService: '2025-08-18' },
-  { id: 2, name: 'KitchenAid 7 qt mixer', category: 'Mixing', status: 'operational', nextService: '2025-10-02' },
-  { id: 3, name: 'Blast chiller', category: 'Cooling', status: 'service due', nextService: '2025-06-12' },
-  { id: 4, name: 'Cake turntable set', category: 'Finishing', status: 'operational', nextService: '2025-12-11' },
-  { id: 5, name: 'Digital scale pair', category: 'Prep', status: 'operational', nextService: '2026-01-09' },
-];
 
 export const defaultQuoteInput: CakeQuoteInput = {
   size: '8 inch',
@@ -96,9 +45,8 @@ export const fallbackQuote = (input: CakeQuoteInput): CakeQuote => {
 };
 
 export const studioContact = {
-  whatsappNumber: '233501694559',
-  whatsappDisplay: '+233 50 169 4559',
-  email: 'dnuer@ashesi.edu.gh',
+  whatsappNumber: '233594612381',
+  whatsappDisplay: '+233 59 461 2381',
 };
 
 export type CartEntry = {

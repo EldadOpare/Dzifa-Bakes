@@ -1,4 +1,4 @@
-import { Clock3, Instagram, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { Clock3, Instagram, MapPin, MessageCircle } from 'lucide-react';
 import { Link } from 'wouter';
 import { studioContact } from '../lib/bakery-data';
 import logo from '@assets/logo.png';
@@ -28,7 +28,6 @@ export function SiteFooter() {
               <li className="flex items-start gap-2.5"><MapPin size={15} className="mt-0.5 shrink-0 text-primary" /> 12 Cantonments Road, Osu, Accra</li>
               <li className="flex items-start gap-2.5"><Clock3 size={15} className="mt-0.5 shrink-0 text-primary" /> Tue to Sat, 9am to 6pm</li>
               <li className="flex items-start gap-2.5"><MessageCircle size={15} className="mt-0.5 shrink-0 text-primary" /> {studioContact.whatsappDisplay}</li>
-              <li className="flex items-start gap-2.5"><Mail size={15} className="mt-0.5 shrink-0 text-primary" /> {studioContact.email}</li>
             </ul>
           </div>
           <div>
